@@ -15,7 +15,7 @@ export class BookingsEntity extends BaseEntity {
   time!: string
 
   @Column()
-  roomId!: string
+  roomId!: number
 
   @ManyToOne(() => TeamsEntity, (team: TeamsEntity) => team.id)
   @JoinColumn({ name: "team_id" })
@@ -23,4 +23,7 @@ export class BookingsEntity extends BaseEntity {
 
   @Column({ nullable: true })
   escapeTime!: string
+
+  @Column()
+  numberOfPeople!: number;
 }

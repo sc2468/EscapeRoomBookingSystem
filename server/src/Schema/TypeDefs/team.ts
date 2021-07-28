@@ -5,7 +5,6 @@ export const TeamType = new GraphQLObjectType({
   fields: () => ({
     id: { type: GraphQLID },
     name: { type: GraphQLString },
-    numberOfPeople: { type: GraphQLInt },
     contactEmail: { type: GraphQLString },
     contactPhoneNumber: { type: GraphQLString },
   })

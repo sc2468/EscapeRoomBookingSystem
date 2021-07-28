@@ -9,11 +9,10 @@ export const CREATE_TEAM = {
     name: { type: GraphQLString },
     contactEmail: { type: GraphQLString },
     contactPhoneNumber: { type: GraphQLString },
-    numberOfPeople: { type: GraphQLInt }
   },
   async resolve(parents: any, args: any) {
-    const { name, contactEmail, contactPhoneNumber, numberOfPeople } = args;
-    const createdTeam = TeamsEntity.create({ name, contactEmail, contactPhoneNumber, numberOfPeople })
+    const { name, contactEmail, contactPhoneNumber } = args;
+    const createdTeam = TeamsEntity.create({ name, contactEmail, contactPhoneNumber })
     return await TeamsEntity.save(createdTeam);
   }
 };
@@ -39,9 +38,10 @@ export const UPDATE_TEAM = {
     newName: { type: GraphQLString },
     newContactEmail: { type: GraphQLString },
     newContactNumber: { type: GraphQLString },
+    newNumberOfPeople: { type: GraphQLInt }
   },
   async resolve(parents: any, args: any) {
-    const { id, oldName, oldContactNumber, newName, newContactEmail, newContactNumber } = args;
+    const { id, oldName, oldContactNumber, newName, newContactEmail, newContactNumber, newNumberOfPeople } = args;
     const team = await TeamsEntity.findOne({ id: id })
 
     if (!team) {
@@ -49,10 +49,10 @@ export const UPDATE_TEAM = {
     }
 
     if (oldName === team?.name && oldContactNumber === team.contactPhoneNumber) {
-      return await TeamsEntity.update(
-        { id: id },
-        { name: newName, contactEmail: newContactEmail, contactPhoneNumber: newContactNumber },
-      )
+      team.name = newName
+      team.contactEmail = newContactEmail
+      team.contactPhoneNumber = newContactNumber
+      return await TeamsEntity.save(team);
     } else {
       // this will be returned in the graphql statement
       throw new Error("Provided name or contact number does not match current information for that team id")

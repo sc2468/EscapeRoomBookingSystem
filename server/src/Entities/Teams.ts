@@ -18,9 +18,6 @@ export class TeamsEntity extends BaseEntity {
   @Column()
   contactPhoneNumber!: string
 
-  @Column()
-  numberOfPeople!: number;
-
   @OneToMany(() => BookingsEntity, (booking: BookingsEntity) => booking.team, { onDelete: "CASCADE", onUpdate: "CASCADE" })
   bookings!: Array<BookingsEntity>;
 }

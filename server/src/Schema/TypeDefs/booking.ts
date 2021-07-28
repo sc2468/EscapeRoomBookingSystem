@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLBoolean, GraphQLEnumType } from 'graphql';
+import { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLBoolean, GraphQLEnumType, GraphQLInt } from 'graphql';
 import { TeamType } from './team';
 export const RoomType = new GraphQLEnumType({
   name: 'Room',
@@ -16,6 +16,7 @@ export const BookingType = new GraphQLObjectType({
     date: { type: GraphQLString },
     time: { type: GraphQLString },
     team: { type: TeamType },
-    roomId: { type: RoomType }
+    roomId: { type: RoomType },
+    numberOfPeople: { type: GraphQLInt }
   })
 })
