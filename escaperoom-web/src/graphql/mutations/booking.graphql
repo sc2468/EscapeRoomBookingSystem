@@ -1,0 +1,30 @@
+mutation BookAvailableBooking($bookingId: Float!, $options: BookingInput! ) {
+  BookAvailableBooking(options: $options, bookingId: $bookingId) {
+    booking {
+      id,
+      dateAndTime
+      roomId
+      status
+      team {
+        name
+        contactEmail
+        contactPhoneNumber
+        numberOfPeople
+      }
+    }
+    errors {
+      field,
+      message
+    }
+  }
+}
+
+mutation CreateAvailableBookings($createAvailableBookingsBookings: [BookingItemInput!]!) {
+  createAvailableBookings(bookings: $createAvailableBookingsBookings) {
+    success
+    errors {
+      field,
+      message
+    }
+  }
+}

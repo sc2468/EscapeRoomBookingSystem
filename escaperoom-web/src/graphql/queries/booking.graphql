@@ -1,0 +1,33 @@
+query getBooking($id: Float!) {
+  getBooking(bookingId: $id) {
+    errors {
+      message
+    }
+    booking {
+      id
+      dateAndTime
+      roomId
+      status
+    }
+  }
+}
+
+query getBookings {
+  getBookings {
+    id
+    dateAndTime
+    roomId
+    status
+    team {
+      name
+      contactEmail
+      contactPhoneNumber
+      numberOfPeople
+    }
+    result {
+      escapeTime
+      notes
+      booking
+    }
+  }
+}
