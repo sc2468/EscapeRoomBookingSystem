@@ -25,12 +25,12 @@ export class BookingsEntity extends BaseEntity {
   status!: number;
 
   @Field(() => TeamsEntity, { nullable: true })
-  @OneToOne(() => TeamsEntity, (team: TeamsEntity) => team.id, { onDelete: "CASCADE", onUpdate: "CASCADE" })
-  @JoinColumn({ name: "team_id", })
+  @OneToOne(() => TeamsEntity, (team: TeamsEntity) => team.id, { eager: true })
+  @JoinColumn({ name: "FK_team_id", })
   team!: number | null;
 
   @Field(() => ResultEntity, { nullable: true })
-  @OneToOne(() => ResultEntity, (result: ResultEntity) => result.id, { onDelete: "CASCADE", onUpdate: "CASCADE" })
-  @JoinColumn({ name: "result_id", })
+  @OneToOne(() => ResultEntity, (result: ResultEntity) => result.id, { eager: true })
+  @JoinColumn({ name: "FK_result_id", })
   result!: number | null;
 }

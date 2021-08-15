@@ -12,3 +12,10 @@ export const roomTimes = [
   { value: '16:00:00', displayName: '4:00 PM - 5:00 PM' },
   { value: '17:30:00', displayName: '5:30 PM - 6:30 PM' },
 ]
+
+export const bookingStatus = {
+  open: 1,
+  booked: 2,
+  completed: 3,
+  closed: 4,
+}

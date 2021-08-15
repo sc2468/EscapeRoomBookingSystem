@@ -8,6 +8,7 @@ import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql'
 import { BookingResolver } from './resolvers/booking';
 import { ResultEntity } from "./entities/Result";
+import { ResultResolver } from "./resolvers/result";
 //import { sendEmail } from "./utils/sendEmail";
 
 
@@ -20,7 +21,7 @@ const main = async () => {
     password: "password",
     logging: !__prod__,
     // to get database tables to be generated switch this to true
-    synchronize: false,
+    synchronize: true,
     entities: [TeamsEntity, BookingsEntity, ResultEntity],
   });
 
@@ -28,7 +29,7 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [BookingResolver],
+      resolvers: [BookingResolver, ResultResolver],
       validate: false
     }),
     // exposes things to all resolvers

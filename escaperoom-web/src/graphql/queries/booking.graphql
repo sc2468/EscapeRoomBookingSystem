@@ -8,6 +8,18 @@ query getBooking($id: Float!) {
       dateAndTime
       roomId
       status
+      team {
+        id
+        name
+        contactEmail
+        contactPhoneNumber
+        numberOfPeople
+      }
+      result {
+        id
+        escapeTime
+        notes
+      }
     }
   }
 }
@@ -19,15 +31,16 @@ query getBookings {
     roomId
     status
     team {
+      id
       name
       contactEmail
       contactPhoneNumber
       numberOfPeople
     }
     result {
+      id
       escapeTime
       notes
-      booking
     }
   }
 }

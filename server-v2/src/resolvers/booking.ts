@@ -1,7 +1,8 @@
 import { bookingStatus } from "../constants";
-import { Arg, Field, InputType, Mutation, ObjectType, Query, Resolver } from "type-graphql";
+import { Arg, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
 import { BookingsEntity } from "../entities/Booking";
 import { TeamsEntity } from "../entities/Teams";
+import { BookingResponse, OperationResponse } from "./types";
 
 @InputType()
 class BookingInput {
@@ -21,32 +22,6 @@ class BookingItemInput {
   dateAndTime: string;
   @Field()
   roomId: number;
-}
-
-@ObjectType()
-class FieldError {
-  @Field()
-  field: string;
-  @Field()
-  message: string;
-}
-
-@ObjectType()
-class BookingResponse {
-  @Field(() => [FieldError], { nullable: true })
-  errors?: FieldError[];
-
-  @Field(() => BookingsEntity, { nullable: true })
-  booking?: BookingsEntity;
-}
-
-@ObjectType()
-class OperationResponse {
-  @Field(() => [FieldError], { nullable: true })
-  errors?: FieldError[];
-
-  @Field(() => Boolean, { nullable: true })
-  success?: boolean;
 }
 
 @Resolver()
@@ -81,8 +56,7 @@ export class BookingResolver {
     @Arg("dateAndTime") dateAndTime: string,
     @Arg("roomId") roomId: number
   ): Promise<BookingsEntity> {
-    const createdOpenBooking = BookingsEntity.create({ roomId, dateAndTime, status: bookingStatus.open })
-    return BookingsEntity.save(createdOpenBooking);
+    return BookingsEntity.create({ roomId, dateAndTime, status: bookingStatus.open }).save()
   }
 
   @Mutation(() => OperationResponse)
@@ -91,15 +65,14 @@ export class BookingResolver {
   ): OperationResponse {
     try {
       Promise.all(bookings.map(async ({ roomId, dateAndTime }) => {
-        const createdBookings = BookingsEntity.create({ roomId, dateAndTime, status: bookingStatus.open });
-        await BookingsEntity.save(createdBookings);
+        BookingsEntity.create({ roomId, dateAndTime, status: bookingStatus.open }).save();
       }));
       return ({ success: true });
     } catch (error) {
       return {
         errors: [{
           field: 'booking could not be created',
-          message: 'No booking with that id can be found.'
+          message: 'booking already exists for the time and room'
         }]
       }
     }
@@ -113,10 +86,8 @@ export class BookingResolver {
     const existingBooking = await BookingsEntity.findOne({ id: bookingId });
     if (existingBooking && existingBooking.status === bookingStatus.open && !existingBooking.team) {
 
-      const team = await TeamsEntity.create({ ...options, booking: existingBooking.id });
-
-      const savedTeam = await TeamsEntity.save(team);
-      existingBooking.team = savedTeam.id;
+      const team = await TeamsEntity.create({ ...options }).save();
+      existingBooking.team = team.id;
       existingBooking.status = bookingStatus.booked;
       const booking = await BookingsEntity.save(existingBooking)
       return { booking };

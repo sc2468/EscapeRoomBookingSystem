@@ -28,6 +28,6 @@ export class TeamsEntity extends BaseEntity {
   numberOfPeople!: number;
 
   // @Field(() => Int)
-  // @OneToOne(() => BookingsEntity, (booking: BookingsEntity) => booking.team)
-  booking!: number;
+  // @OneToOne(() => BookingsEntity, (booking: BookingsEntity) => booking.id)
+  // booking!: number;
 }

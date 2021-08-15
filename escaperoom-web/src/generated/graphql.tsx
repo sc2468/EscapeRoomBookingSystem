@@ -53,6 +53,8 @@ export type Mutation = {
   createAvailableBooking: BookingsEntity;
   createAvailableBookings: OperationResponse;
   BookAvailableBooking: BookingResponse;
+  CompleteBooking: BookingResponse;
+  CloseOpenBooking: BookingResponse;
 };
 
 
@@ -69,6 +71,17 @@ export type MutationCreateAvailableBookingsArgs = {
 
 export type MutationBookAvailableBookingArgs = {
   options: BookingInput;
+  bookingId: Scalars['Float'];
+};
+
+
+export type MutationCompleteBookingArgs = {
+  escapeTime: Scalars['Float'];
+  bookingId: Scalars['Float'];
+};
+
+
+export type MutationCloseOpenBookingArgs = {
   bookingId: Scalars['Float'];
 };
 
@@ -92,9 +105,8 @@ export type QueryGetBookingArgs = {
 export type ResultEntity = {
   __typename?: 'ResultEntity';
   id: Scalars['Int'];
-  escapeTime?: Maybe<Scalars['String']>;
+  escapeTime: Scalars['Int'];
   notes?: Maybe<Scalars['String']>;
-  booking: Scalars['Int'];
 };
 
 export type TeamsEntity = {
@@ -162,6 +174,13 @@ export type GetBookingQuery = (
     )>>, booking?: Maybe<(
       { __typename?: 'BookingsEntity' }
       & Pick<BookingsEntity, 'id' | 'dateAndTime' | 'roomId' | 'status'>
+      & { team?: Maybe<(
+        { __typename?: 'TeamsEntity' }
+        & Pick<TeamsEntity, 'id' | 'name' | 'contactEmail' | 'contactPhoneNumber' | 'numberOfPeople'>
+      )>, result?: Maybe<(
+        { __typename?: 'ResultEntity' }
+        & Pick<ResultEntity, 'id' | 'escapeTime' | 'notes'>
+      )> }
     )> }
   ) }
 );
@@ -176,10 +195,10 @@ export type GetBookingsQuery = (
     & Pick<BookingsEntity, 'id' | 'dateAndTime' | 'roomId' | 'status'>
     & { team?: Maybe<(
       { __typename?: 'TeamsEntity' }
-      & Pick<TeamsEntity, 'name' | 'contactEmail' | 'contactPhoneNumber' | 'numberOfPeople'>
+      & Pick<TeamsEntity, 'id' | 'name' | 'contactEmail' | 'contactPhoneNumber' | 'numberOfPeople'>
     )>, result?: Maybe<(
       { __typename?: 'ResultEntity' }
-      & Pick<ResultEntity, 'escapeTime' | 'notes' | 'booking'>
+      & Pick<ResultEntity, 'id' | 'escapeTime' | 'notes'>
     )> }
   )> }
 );
@@ -282,6 +301,18 @@ export const GetBookingDocument = gql`
       dateAndTime
       roomId
       status
+      team {
+        id
+        name
+        contactEmail
+        contactPhoneNumber
+        numberOfPeople
+      }
+      result {
+        id
+        escapeTime
+        notes
+      }
     }
   }
 }
@@ -322,15 +353,16 @@ export const GetBookingsDocument = gql`
     roomId
     status
     team {
+      id
       name
       contactEmail
       contactPhoneNumber
       numberOfPeople
     }
     result {
+      id
       escapeTime
       notes
-      booking
     }
   }
 }
