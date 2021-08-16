@@ -1,12 +1,12 @@
 export const roomBackgroundSelector = (roomId: number) => {
   switch (roomId) {
+    case 0:
+      return "http://localhost:3000/assets/killerbackground.jpg";
     case 1:
-      return "url('/assets/killerbackground.jpg')";
+      return "http://localhost:3000/assets/sinkingShip.jpg";
     case 2:
-      return "url('/assets/killerbackground.jpg')";
-    case 3:
-      return "url('/assets/killerbackground.jpg')";
+      return "http://localhost:3000/assets/spacecrash.jpg";
     default:
-      return "url('/assets/killerbackground.jpg')";
+      return "http://localhost:3000/assets/killerbackground.jpg";
   }
 }

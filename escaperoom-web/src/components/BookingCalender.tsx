@@ -14,7 +14,6 @@ export default function BookingCalender({ bookingEntries }: Props) {
     const endDate = new Date(booking.dateAndTime);
     endDate.setHours(endDate.getHours() + 1);
     console.log(startDate, endDate,);
-    console.log(booking);
     const title = booking.team ? booking.team.name : "Available";
 
     return { id: booking.id, title, start: startDate, end: endDate }
