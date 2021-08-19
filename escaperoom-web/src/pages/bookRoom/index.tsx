@@ -14,7 +14,6 @@ export default function index() {
       {loading && <SpinnerIcon />}
       {error && <div>An Error has occurred please refresh the page</div>}
       {(data && data.getBookings) && <BookingView bookingEntries={data.getBookings} />}
-      {(data && data.getBookings) && <BookingCalender bookingEntries={data.getBookings} />}
     </Layout>
   )
 }

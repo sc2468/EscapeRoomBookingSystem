@@ -2,7 +2,8 @@ mutation BookAvailableBooking($bookingId: Float!, $options: BookingInput! ) {
   BookAvailableBooking(options: $options, bookingId: $bookingId) {
     booking {
       id,
-      dateAndTime
+      date
+      time
       roomId
       status
       team {

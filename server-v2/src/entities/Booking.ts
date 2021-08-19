@@ -14,7 +14,11 @@ export class BookingsEntity extends BaseEntity {
 
   @Field(() => String)
   @Column()
-  dateAndTime!: string
+  time!: string
+
+  @Field(() => String)
+  @Column()
+  date!: string
 
   @Field(() => Int)
   @Column()

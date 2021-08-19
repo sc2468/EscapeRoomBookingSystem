@@ -4,7 +4,7 @@ export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-const defaultOptions =  {}
+const defaultOptions = {}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -22,7 +22,8 @@ export type BookingInput = {
 };
 
 export type BookingItemInput = {
-  dateAndTime: Scalars['String'];
+  date: Scalars['String'];
+  time: Scalars['String'];
   roomId: Scalars['Float'];
 };
 
@@ -35,7 +36,8 @@ export type BookingResponse = {
 export type BookingsEntity = {
   __typename?: 'BookingsEntity';
   id: Scalars['Float'];
-  dateAndTime: Scalars['String'];
+  time: Scalars['String'];
+  date: Scalars['String'];
   roomId: Scalars['Int'];
   status: Scalars['Int'];
   team?: Maybe<TeamsEntity>;
@@ -60,7 +62,8 @@ export type Mutation = {
 
 export type MutationCreateAvailableBookingArgs = {
   roomId: Scalars['Float'];
-  dateAndTime: Scalars['String'];
+  time: Scalars['String'];
+  date: Scalars['String'];
 };
 
 
@@ -126,20 +129,26 @@ export type BookAvailableBookingMutationVariables = Exact<{
 
 export type BookAvailableBookingMutation = (
   { __typename?: 'Mutation' }
-  & { BookAvailableBooking: (
-    { __typename?: 'BookingResponse' }
-    & { booking?: Maybe<(
-      { __typename?: 'BookingsEntity' }
-      & Pick<BookingsEntity, 'id' | 'dateAndTime' | 'roomId' | 'status'>
-      & { team?: Maybe<(
-        { __typename?: 'TeamsEntity' }
-        & Pick<TeamsEntity, 'name' | 'contactEmail' | 'contactPhoneNumber' | 'numberOfPeople'>
-      )> }
-    )>, errors?: Maybe<Array<(
-      { __typename?: 'FieldError' }
-      & Pick<FieldError, 'field' | 'message'>
-    )>> }
-  ) }
+  & {
+    BookAvailableBooking: (
+      { __typename?: 'BookingResponse' }
+      & {
+        booking?: Maybe<(
+          { __typename?: 'BookingsEntity' }
+          & Pick<BookingsEntity, 'id' | 'date' | 'time' | 'roomId' | 'status'>
+          & {
+            team?: Maybe<(
+              { __typename?: 'TeamsEntity' }
+              & Pick<TeamsEntity, 'name' | 'contactEmail' | 'contactPhoneNumber' | 'numberOfPeople'>
+            )>
+          }
+        )>, errors?: Maybe<Array<(
+          { __typename?: 'FieldError' }
+          & Pick<FieldError, 'field' | 'message'>
+        )>>
+      }
+    )
+  }
 );
 
 export type CreateAvailableBookingsMutationVariables = Exact<{
@@ -149,14 +158,18 @@ export type CreateAvailableBookingsMutationVariables = Exact<{
 
 export type CreateAvailableBookingsMutation = (
   { __typename?: 'Mutation' }
-  & { createAvailableBookings: (
-    { __typename?: 'OperationResponse' }
-    & Pick<OperationResponse, 'success'>
-    & { errors?: Maybe<Array<(
-      { __typename?: 'FieldError' }
-      & Pick<FieldError, 'field' | 'message'>
-    )>> }
-  ) }
+  & {
+    createAvailableBookings: (
+      { __typename?: 'OperationResponse' }
+      & Pick<OperationResponse, 'success'>
+      & {
+        errors?: Maybe<Array<(
+          { __typename?: 'FieldError' }
+          & Pick<FieldError, 'field' | 'message'>
+        )>>
+      }
+    )
+  }
 );
 
 export type GetBookingQueryVariables = Exact<{
@@ -166,23 +179,29 @@ export type GetBookingQueryVariables = Exact<{
 
 export type GetBookingQuery = (
   { __typename?: 'Query' }
-  & { getBooking: (
-    { __typename?: 'BookingResponse' }
-    & { errors?: Maybe<Array<(
-      { __typename?: 'FieldError' }
-      & Pick<FieldError, 'message'>
-    )>>, booking?: Maybe<(
-      { __typename?: 'BookingsEntity' }
-      & Pick<BookingsEntity, 'id' | 'dateAndTime' | 'roomId' | 'status'>
-      & { team?: Maybe<(
-        { __typename?: 'TeamsEntity' }
-        & Pick<TeamsEntity, 'id' | 'name' | 'contactEmail' | 'contactPhoneNumber' | 'numberOfPeople'>
-      )>, result?: Maybe<(
-        { __typename?: 'ResultEntity' }
-        & Pick<ResultEntity, 'id' | 'escapeTime' | 'notes'>
-      )> }
-    )> }
-  ) }
+  & {
+    getBooking: (
+      { __typename?: 'BookingResponse' }
+      & {
+        errors?: Maybe<Array<(
+          { __typename?: 'FieldError' }
+          & Pick<FieldError, 'message'>
+        )>>, booking?: Maybe<(
+          { __typename?: 'BookingsEntity' }
+          & Pick<BookingsEntity, 'id' | 'date' | 'time' | 'roomId' | 'status'>
+          & {
+            team?: Maybe<(
+              { __typename?: 'TeamsEntity' }
+              & Pick<TeamsEntity, 'id' | 'name' | 'contactEmail' | 'contactPhoneNumber' | 'numberOfPeople'>
+            )>, result?: Maybe<(
+              { __typename?: 'ResultEntity' }
+              & Pick<ResultEntity, 'id' | 'escapeTime' | 'notes'>
+            )>
+          }
+        )>
+      }
+    )
+  }
 );
 
 export type GetBookingsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -190,17 +209,21 @@ export type GetBookingsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetBookingsQuery = (
   { __typename?: 'Query' }
-  & { getBookings: Array<(
-    { __typename?: 'BookingsEntity' }
-    & Pick<BookingsEntity, 'id' | 'dateAndTime' | 'roomId' | 'status'>
-    & { team?: Maybe<(
-      { __typename?: 'TeamsEntity' }
-      & Pick<TeamsEntity, 'id' | 'name' | 'contactEmail' | 'contactPhoneNumber' | 'numberOfPeople'>
-    )>, result?: Maybe<(
-      { __typename?: 'ResultEntity' }
-      & Pick<ResultEntity, 'id' | 'escapeTime' | 'notes'>
-    )> }
-  )> }
+  & {
+    getBookings: Array<(
+      { __typename?: 'BookingsEntity' }
+      & Pick<BookingsEntity, 'id' | 'date' | 'time' | 'roomId' | 'status'>
+      & {
+        team?: Maybe<(
+          { __typename?: 'TeamsEntity' }
+          & Pick<TeamsEntity, 'id' | 'name' | 'contactEmail' | 'contactPhoneNumber' | 'numberOfPeople'>
+        )>, result?: Maybe<(
+          { __typename?: 'ResultEntity' }
+          & Pick<ResultEntity, 'id' | 'escapeTime' | 'notes'>
+        )>
+      }
+    )>
+  }
 );
 
 
@@ -209,7 +232,8 @@ export const BookAvailableBookingDocument = gql`
   BookAvailableBooking(options: $options, bookingId: $bookingId) {
     booking {
       id
-      dateAndTime
+      date
+      time
       roomId
       status
       team {
@@ -247,9 +271,9 @@ export type BookAvailableBookingMutationFn = Apollo.MutationFunction<BookAvailab
  * });
  */
 export function useBookAvailableBookingMutation(baseOptions?: Apollo.MutationHookOptions<BookAvailableBookingMutation, BookAvailableBookingMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<BookAvailableBookingMutation, BookAvailableBookingMutationVariables>(BookAvailableBookingDocument, options);
-      }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<BookAvailableBookingMutation, BookAvailableBookingMutationVariables>(BookAvailableBookingDocument, options);
+}
 export type BookAvailableBookingMutationHookResult = ReturnType<typeof useBookAvailableBookingMutation>;
 export type BookAvailableBookingMutationResult = Apollo.MutationResult<BookAvailableBookingMutation>;
 export type BookAvailableBookingMutationOptions = Apollo.BaseMutationOptions<BookAvailableBookingMutation, BookAvailableBookingMutationVariables>;
@@ -284,9 +308,9 @@ export type CreateAvailableBookingsMutationFn = Apollo.MutationFunction<CreateAv
  * });
  */
 export function useCreateAvailableBookingsMutation(baseOptions?: Apollo.MutationHookOptions<CreateAvailableBookingsMutation, CreateAvailableBookingsMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateAvailableBookingsMutation, CreateAvailableBookingsMutationVariables>(CreateAvailableBookingsDocument, options);
-      }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useMutation<CreateAvailableBookingsMutation, CreateAvailableBookingsMutationVariables>(CreateAvailableBookingsDocument, options);
+}
 export type CreateAvailableBookingsMutationHookResult = ReturnType<typeof useCreateAvailableBookingsMutation>;
 export type CreateAvailableBookingsMutationResult = Apollo.MutationResult<CreateAvailableBookingsMutation>;
 export type CreateAvailableBookingsMutationOptions = Apollo.BaseMutationOptions<CreateAvailableBookingsMutation, CreateAvailableBookingsMutationVariables>;
@@ -298,7 +322,8 @@ export const GetBookingDocument = gql`
     }
     booking {
       id
-      dateAndTime
+      date
+      time
       roomId
       status
       team {
@@ -335,13 +360,13 @@ export const GetBookingDocument = gql`
  * });
  */
 export function useGetBookingQuery(baseOptions: Apollo.QueryHookOptions<GetBookingQuery, GetBookingQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetBookingQuery, GetBookingQueryVariables>(GetBookingDocument, options);
-      }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<GetBookingQuery, GetBookingQueryVariables>(GetBookingDocument, options);
+}
 export function useGetBookingLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBookingQuery, GetBookingQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetBookingQuery, GetBookingQueryVariables>(GetBookingDocument, options);
-        }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<GetBookingQuery, GetBookingQueryVariables>(GetBookingDocument, options);
+}
 export type GetBookingQueryHookResult = ReturnType<typeof useGetBookingQuery>;
 export type GetBookingLazyQueryHookResult = ReturnType<typeof useGetBookingLazyQuery>;
 export type GetBookingQueryResult = Apollo.QueryResult<GetBookingQuery, GetBookingQueryVariables>;
@@ -349,7 +374,8 @@ export const GetBookingsDocument = gql`
     query getBookings {
   getBookings {
     id
-    dateAndTime
+    date
+    time
     roomId
     status
     team {
@@ -384,13 +410,13 @@ export const GetBookingsDocument = gql`
  * });
  */
 export function useGetBookingsQuery(baseOptions?: Apollo.QueryHookOptions<GetBookingsQuery, GetBookingsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetBookingsQuery, GetBookingsQueryVariables>(GetBookingsDocument, options);
-      }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useQuery<GetBookingsQuery, GetBookingsQueryVariables>(GetBookingsDocument, options);
+}
 export function useGetBookingsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBookingsQuery, GetBookingsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetBookingsQuery, GetBookingsQueryVariables>(GetBookingsDocument, options);
-        }
+  const options = { ...defaultOptions, ...baseOptions }
+  return Apollo.useLazyQuery<GetBookingsQuery, GetBookingsQueryVariables>(GetBookingsDocument, options);
+}
 export type GetBookingsQueryHookResult = ReturnType<typeof useGetBookingsQuery>;
 export type GetBookingsLazyQueryHookResult = ReturnType<typeof useGetBookingsLazyQuery>;
 export type GetBookingsQueryResult = Apollo.QueryResult<GetBookingsQuery, GetBookingsQueryVariables>;

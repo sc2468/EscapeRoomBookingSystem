@@ -15,15 +15,16 @@ type Props = {
 export default function RoomResultForm(props: Props) {
 
   const [bookAvailableBooking] = useBookAvailableBookingMutation();
-  const { id, dateAndTime, roomId } = props.booking;
+  const { id, date, time, roomId } = props.booking;
   const roomName = escapeRooms.filter(room => room.value === roomId)[0].name;
-  const formattedDateAndTime = new Date(dateAndTime).toLocaleString('en-US', {
+  const formattedDate = new Date(date).toLocaleString('en-US', {
     day: 'numeric', // numeric, 2-digit
     year: 'numeric', // numeric, 2-digit
     month: 'long', // numeric, 2-digit, long, short, narrow
-    hour: 'numeric', // numeric, 2-digit
-    minute: 'numeric', // numeric, 2-digit
-  });;
+    // hour: 'numeric', // numeric, 2-digit
+    // minute: 'numeric', // numeric, 2-digit
+  });
+
   return (
     <Box backgroundImage={roomBackgroundSelector(roomId)} height={"100%"}>
       <Layout>
@@ -54,7 +55,7 @@ export default function RoomResultForm(props: Props) {
                 </Box>
                 <Box mt={4}>
                   <FormLabel>Date and Time</FormLabel>
-                  <Input disabled={true} value={formattedDateAndTime}></Input>
+                  <Input disabled={true} value={formattedDate}></Input>
                 </Box>
                 <InputField name="name" placeholder="Team Name" label="Team Name" />
                 <Box mt={4}>

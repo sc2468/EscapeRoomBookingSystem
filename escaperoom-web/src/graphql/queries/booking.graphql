@@ -5,7 +5,8 @@ query getBooking($id: Float!) {
     }
     booking {
       id
-      dateAndTime
+      date
+      time
       roomId
       status
       team {
@@ -27,7 +28,8 @@ query getBooking($id: Float!) {
 query getBookings {
   getBookings {
     id
-    dateAndTime
+    date
+    time
     roomId
     status
     team {

@@ -19,7 +19,9 @@ class BookingInput {
 @InputType()
 class BookingItemInput {
   @Field()
-  dateAndTime: string;
+  date: string;
+  @Field()
+  time: string;
   @Field()
   roomId: number;
 }
@@ -53,10 +55,11 @@ export class BookingResolver {
 
   @Mutation(() => BookingsEntity)
   createAvailableBooking(
-    @Arg("dateAndTime") dateAndTime: string,
+    @Arg("date") date: string,
+    @Arg("time") time: string,
     @Arg("roomId") roomId: number
   ): Promise<BookingsEntity> {
-    return BookingsEntity.create({ roomId, dateAndTime, status: bookingStatus.open }).save()
+    return BookingsEntity.create({ roomId, date, time, status: bookingStatus.open }).save()
   }
 
   @Mutation(() => OperationResponse)
@@ -64,8 +67,8 @@ export class BookingResolver {
     @Arg("bookings", () => [BookingItemInput]) bookings: BookingItemInput[],
   ): OperationResponse {
     try {
-      Promise.all(bookings.map(async ({ roomId, dateAndTime }) => {
-        BookingsEntity.create({ roomId, dateAndTime, status: bookingStatus.open }).save();
+      Promise.all(bookings.map(async ({ roomId, date, time }) => {
+        BookingsEntity.create({ roomId, date, time, status: bookingStatus.open }).save();
       }));
       return ({ success: true });
     } catch (error) {

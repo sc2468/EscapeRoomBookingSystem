@@ -15,7 +15,10 @@ export default function NavBar() {
         <Link paddingLeft={5}>Booking</Link>
       </NextLink>
       <NextLink href='/admin/createRooms'>
-        <Link paddingLeft={5}>admin</Link>
+        <Link paddingLeft={5}>Admin Create Room</Link>
+      </NextLink>
+      <NextLink href='/admin/bookings'>
+        <Link paddingLeft={5}>Admin Bookings</Link>
       </NextLink>
     </Flex>
   )
