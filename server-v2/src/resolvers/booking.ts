@@ -1,37 +1,27 @@
 import { bookingStatus } from "../constants";
-import { Arg, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Mutation, Query, Resolver } from "type-graphql";
 import { BookingsEntity } from "../entities/Booking";
 import { TeamsEntity } from "../entities/Teams";
-import { BookingResponse, OperationResponse } from "./types";
-
-@InputType()
-class BookingInput {
-  @Field()
-  name: string;
-  @Field()
-  contactEmail: string;
-  @Field()
-  contactPhoneNumber: string;
-  @Field()
-  numberOfPeople: number;
-}
-
-@InputType()
-class BookingItemInput {
-  @Field()
-  date: string;
-  @Field()
-  time: string;
-  @Field()
-  roomId: number;
-}
+import { BookingInput, BookingItemInput, BookingResponse, OperationResponse } from "./types";
+import { getConnection } from "typeorm";
+import { getStartOfDateSeconds } from "../utils/getDateString";
 
 @Resolver()
 export class BookingResolver {
   @Query(() => [BookingsEntity])
-  getBookings(
+  async getBookings(
+    @Arg('limit') limit: number,
+    @Arg('cursor', () => String, { nullable: true }) cursor: string | undefined
   ): Promise<BookingsEntity[]> {
-    return BookingsEntity.find();
+    const day = 60 * 60 * 24 * 1000;
+    const startDate = cursor ? new Date(parseFloat(cursor)) : new Date();
+    const limitDate = startDate.getTime() + (day * limit);
+    console.log(getStartOfDateSeconds(startDate), limitDate)
+    const queryBuilder = getConnection()
+      .getRepository(BookingsEntity)
+      .createQueryBuilder('p')
+      .where('date >= :startDate AND date <= :limitDate', { startDate: startDate.getTime(), limitDate })
+    return queryBuilder.getMany()
   }
 
   @Query(() => BookingResponse)
@@ -59,6 +49,15 @@ export class BookingResolver {
     @Arg("time") time: string,
     @Arg("roomId") roomId: number
   ): Promise<BookingResponse> {
+    const existingBooking = await BookingsEntity.find({ roomId, date, time })
+    if (existingBooking.length !== 0) {
+      return {
+        errors: [{
+          message: `A room on the ${date} at ${time} has already been created please refresh you browser`,
+          field: 'roomId'
+        }]
+      }
+    }
     return { booking: await BookingsEntity.create({ roomId, date, time, status: bookingStatus.open }).save() }
   }
 
@@ -68,7 +67,7 @@ export class BookingResolver {
   ): OperationResponse {
     try {
       Promise.all(bookings.map(async ({ roomId, date, time }) => {
-        BookingsEntity.create({ roomId, date, time, status: bookingStatus.open }).save();
+        BookingsEntity.create({ roomId, date: date, time, status: bookingStatus.open }).save();
       }));
       return ({ success: true });
     } catch (error) {

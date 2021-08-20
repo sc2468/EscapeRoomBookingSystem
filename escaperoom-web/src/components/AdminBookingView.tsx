@@ -3,11 +3,11 @@ import { BookingsEntity } from '../generated/graphql';
 import { Box, Button, Grid, GridItem, HStack, Input } from '@chakra-ui/react';
 import { bookingStatus, escapeRoom, escapeRooms, roomTime, roomTimes } from '../constance';
 import RoomCard from './molecules/RoomCard';
-import { bookingStatusObject, createBookingDateHashMap, getBooking, getBookingStatus, getRoomMap } from '../untilies/bookingHelper';
+import { createBookingDateHashMap, getBooking, getBookingStatus, getRoomMap } from '../untilies/bookingHelper';
 import TimeListItem from './molecules/TimeListItem';
-import CancelPopUp from './molecules/CancelPopUp'
 import CreateRoomPopUp from './molecules/CreateRoomPopUp';
 import BookRoomPopUp from './molecules/BookRoomPopUp';
+import CompleteRoomPopUp from './molecules/CompleteRoomPopUp';
 
 interface Props {
   bookingEntries: BookingsEntity[]
@@ -22,15 +22,14 @@ export default function AdminBookingView({ bookingEntries }: Props) {
     if (bookingData) {
       switch (bookingData.status) {
         case bookingStatus.open:
-          //return <CancelPopUp bookingId={bookingData.id} />
           return <BookRoomPopUp bookingData={bookingData} />
         case bookingStatus.booked:
-
+          return <CompleteRoomPopUp bookingData={bookingData} />
       }
     }
     return <CreateRoomPopUp roomId={room.value} time={time.value} date={date} />
   }
-
+  console.log(new Date(parseFloat('1629417600000')));
   const day = 60 * 60 * 24 * 1000;
   return (
     <Box m={4}>
@@ -43,11 +42,12 @@ export default function AdminBookingView({ bookingEntries }: Props) {
         <Grid gap={2} templateColumns={{ md: "repeat(3, 1fr)", base: "repeat(1, 1fr)" }}>
           {escapeRooms.map(room => {
             const roomMap = getRoomMap(dateHashMap, room.value, date);
-            return (<GridItem colSpan={1} m={2} key={room.value} backgroundColor='gray.100' alignItems='center' alignContent='center'>
+            return (<GridItem key={`roomItem-${room.value}`} colSpan={1} m={2} backgroundColor='gray.100' alignItems='center' alignContent='center'>
               <RoomCard roomId={room.value} roomName={room.name}>
                 {roomTimes.map(time => {
                   const bookingData = getBooking(roomMap, time.value);
                   return (<TimeListItem
+                    key={`roomItem-${room.value}-time-${time.value}`}
                     time={time.fullDisplayName}
                     popoverContent={getPopUpContent(room, time, date, bookingData)}
                     status={bookingData ? getBookingStatus(bookingData) : "Unavailable"}

@@ -5,6 +5,7 @@ import { InputField } from '../../components/atoms/InputField';
 import Layout from '../../components/molecules/Layout';
 import { escapeRooms, roomTimes } from '../../constance';
 import { BookingItemInput, useCreateAvailableBookingsMutation } from '../../generated/graphql'
+import { getStartOfDateSeconds } from '../../untilies/getDateString';
 import { toErrorMap } from '../../untilies/toErrorMap';
 
 export default function createRooks() {
@@ -17,13 +18,14 @@ export default function createRooks() {
         <Formik
           initialValues={{
             roomId: 1,
-            day: undefined,
+            day: new Date().toISOString().slice(0, 10),
             time: [],
           }}
           onSubmit={async (values, { setErrors }) => {
+            console.log(values)
             const newBookings: BookingItemInput[] = values.time.map((time) => ({
               roomId: values.roomId,
-              date: new Date(values.day).toLocaleDateString(),
+              date: getStartOfDateSeconds(new Date(values.day)),
               time
             }))
             const response = await bulkCreate({ variables: { createAvailableBookingsBookings: newBookings } })
@@ -41,7 +43,7 @@ export default function createRooks() {
             }
           }}
         >
-          {({ isSubmitting }) => (
+          {({ isSubmitting, values: { day } }) => (
             <Form>
               <Text fontSize="5xl">Create New Available Bookings</Text>
               <FormControl isRequired mt={4}>
@@ -53,7 +55,7 @@ export default function createRooks() {
                 </Field>
               </FormControl>
               <Box mt={4}>
-                <InputField name="day" placeholder="Day" label="Day" type="date" />
+                <InputField name="day" label="Day" type="date" placeholder={'Day'} value={day} />
               </Box>
               <FormControl isRequired mt={4}>
                 <FormLabel htmlFor="Select Times">Select Times</FormLabel>
@@ -74,6 +76,6 @@ export default function createRooks() {
           )}
         </Formik>
       </Box>
-    </Layout>
+    </Layout >
   )
 }

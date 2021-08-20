@@ -5,7 +5,7 @@ import Loading from '../../components/molecules/Loading'
 import { useGetBookingsQuery } from '../../generated/graphql'
 
 export default function index() {
-  const { error, loading, data } = useGetBookingsQuery();
+  const { error, loading, data } = useGetBookingsQuery({ variables: { limit: 3 } });
   return (
     <Layout>
       {loading && <Loading />}

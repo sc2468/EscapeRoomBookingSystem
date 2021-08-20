@@ -37,7 +37,7 @@ export type BookingsEntity = {
   __typename?: 'BookingsEntity';
   id: Scalars['Float'];
   time: Scalars['String'];
-  date: Scalars['String'];
+  date: Scalars['Float'];
   roomId: Scalars['Int'];
   status: Scalars['Int'];
   team?: Maybe<TeamsEntity>;
@@ -104,6 +104,12 @@ export type Query = {
   __typename?: 'Query';
   getBookings: Array<BookingsEntity>;
   getBooking: BookingResponse;
+};
+
+
+export type QueryGetBookingsArgs = {
+  cursor?: Maybe<Scalars['String']>;
+  limit: Scalars['Float'];
 };
 
 
@@ -213,6 +219,33 @@ export type CreateAvailableBookingMutation = (
   ) }
 );
 
+export type CompleteBookingMutationVariables = Exact<{
+  escapeTime: Scalars['Float'];
+  bookingId: Scalars['Float'];
+}>;
+
+
+export type CompleteBookingMutation = (
+  { __typename?: 'Mutation' }
+  & { CompleteBooking: (
+    { __typename?: 'BookingResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>>, booking?: Maybe<(
+      { __typename?: 'BookingsEntity' }
+      & Pick<BookingsEntity, 'id' | 'time' | 'date' | 'roomId' | 'status'>
+      & { team?: Maybe<(
+        { __typename?: 'TeamsEntity' }
+        & Pick<TeamsEntity, 'id' | 'name' | 'contactEmail' | 'contactPhoneNumber' | 'numberOfPeople'>
+      )>, result?: Maybe<(
+        { __typename?: 'ResultEntity' }
+        & Pick<ResultEntity, 'id' | 'escapeTime' | 'notes'>
+      )> }
+    )> }
+  ) }
+);
+
 export type GetBookingQueryVariables = Exact<{
   id: Scalars['Float'];
 }>;
@@ -239,7 +272,10 @@ export type GetBookingQuery = (
   ) }
 );
 
-export type GetBookingsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetBookingsQueryVariables = Exact<{
+  limit: Scalars['Float'];
+  cursor?: Maybe<Scalars['String']>;
+}>;
 
 
 export type GetBookingsQuery = (
@@ -439,6 +475,62 @@ export function useCreateAvailableBookingMutation(baseOptions?: Apollo.MutationH
 export type CreateAvailableBookingMutationHookResult = ReturnType<typeof useCreateAvailableBookingMutation>;
 export type CreateAvailableBookingMutationResult = Apollo.MutationResult<CreateAvailableBookingMutation>;
 export type CreateAvailableBookingMutationOptions = Apollo.BaseMutationOptions<CreateAvailableBookingMutation, CreateAvailableBookingMutationVariables>;
+export const CompleteBookingDocument = gql`
+    mutation CompleteBooking($escapeTime: Float!, $bookingId: Float!) {
+  CompleteBooking(escapeTime: $escapeTime, bookingId: $bookingId) {
+    errors {
+      field
+      message
+    }
+    booking {
+      id
+      time
+      date
+      roomId
+      status
+      team {
+        id
+        name
+        contactEmail
+        contactPhoneNumber
+        numberOfPeople
+      }
+      result {
+        id
+        escapeTime
+        notes
+      }
+    }
+  }
+}
+    `;
+export type CompleteBookingMutationFn = Apollo.MutationFunction<CompleteBookingMutation, CompleteBookingMutationVariables>;
+
+/**
+ * __useCompleteBookingMutation__
+ *
+ * To run a mutation, you first call `useCompleteBookingMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCompleteBookingMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [completeBookingMutation, { data, loading, error }] = useCompleteBookingMutation({
+ *   variables: {
+ *      escapeTime: // value for 'escapeTime'
+ *      bookingId: // value for 'bookingId'
+ *   },
+ * });
+ */
+export function useCompleteBookingMutation(baseOptions?: Apollo.MutationHookOptions<CompleteBookingMutation, CompleteBookingMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CompleteBookingMutation, CompleteBookingMutationVariables>(CompleteBookingDocument, options);
+      }
+export type CompleteBookingMutationHookResult = ReturnType<typeof useCompleteBookingMutation>;
+export type CompleteBookingMutationResult = Apollo.MutationResult<CompleteBookingMutation>;
+export type CompleteBookingMutationOptions = Apollo.BaseMutationOptions<CompleteBookingMutation, CompleteBookingMutationVariables>;
 export const GetBookingDocument = gql`
     query getBooking($id: Float!) {
   getBooking(bookingId: $id) {
@@ -496,8 +588,8 @@ export type GetBookingQueryHookResult = ReturnType<typeof useGetBookingQuery>;
 export type GetBookingLazyQueryHookResult = ReturnType<typeof useGetBookingLazyQuery>;
 export type GetBookingQueryResult = Apollo.QueryResult<GetBookingQuery, GetBookingQueryVariables>;
 export const GetBookingsDocument = gql`
-    query getBookings {
-  getBookings {
+    query getBookings($limit: Float!, $cursor: String) {
+  getBookings(limit: $limit, cursor: $cursor) {
     id
     date
     time
@@ -531,10 +623,12 @@ export const GetBookingsDocument = gql`
  * @example
  * const { data, loading, error } = useGetBookingsQuery({
  *   variables: {
+ *      limit: // value for 'limit'
+ *      cursor: // value for 'cursor'
  *   },
  * });
  */
-export function useGetBookingsQuery(baseOptions?: Apollo.QueryHookOptions<GetBookingsQuery, GetBookingsQueryVariables>) {
+export function useGetBookingsQuery(baseOptions: Apollo.QueryHookOptions<GetBookingsQuery, GetBookingsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetBookingsQuery, GetBookingsQueryVariables>(GetBookingsDocument, options);
       }

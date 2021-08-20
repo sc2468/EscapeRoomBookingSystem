@@ -1,7 +1,7 @@
 import { bookingStatus } from "../constance";
 import { BookingsEntity } from "../generated/graphql";
 
-export const getBookingStatus = (booking: bookingStatusObject) => {
+export const getBookingStatus = (booking: bookingStatusObject | BookingsEntity) => {
   switch (booking.status) {
     case bookingStatus.open:
       return "Open";
@@ -16,7 +16,15 @@ export const getBookingStatus = (booking: bookingStatusObject) => {
   }
 }
 
-export const getRoomMap = (dateHashMap: BookingDateMap, roomId: number, date: Date): bookingStatusObject[] => {
+export const getStatusBooking = (roomMap: bookingStatusObject[], time: string): bookingStatusObject | undefined => {
+  const filterStatus = roomMap.filter(room => room.time === time);
+  if (filterStatus.length === 1) {
+    return filterStatus[0];
+  }
+  return undefined;
+}
+
+export const getStatusRoomMap = (dateHashMap: BookingStatusDateMap, roomId: number, date: Date): bookingStatusObject[] => {
   const dateObject = dateHashMap[date.toLocaleDateString()];
   if (dateObject && dateObject[roomId]) {
     return dateObject[roomId.toString()];
@@ -53,18 +61,21 @@ export const createStatusDateHashMap = (bookingEntries: BookingsEntity[]): Booki
   return current;
 }, {});
 
-export interface bookingObject {
-  id: string,
-  time: string,
-  status: number
-}
 
 export interface roomBookingMap {
-  [key: string]: bookingObject[]
+  [key: string]: BookingsEntity[]
 }
 
 export interface BookingDateMap {
   [key: string]: roomBookingMap[]
+}
+
+export const getRoomMap = (dateHashMap: BookingDateMap, roomId: number, date: Date): BookingsEntity[] => {
+  const dateObject = dateHashMap[date.toLocaleDateString()];
+  if (dateObject && dateObject[roomId]) {
+    return dateObject[roomId.toString()];
+  }
+  return [];
 }
 
 export const createBookingDateHashMap = (bookingEntries: BookingsEntity[]): BookingDateMap => bookingEntries.reduce((current, booking) => {
@@ -81,7 +92,8 @@ export const createBookingDateHashMap = (bookingEntries: BookingsEntity[]): Book
   return current;
 }, {});
 
-export const getBooking = (roomMap: bookingStatusObject[], time: string): bookingStatusObject | undefined => {
+
+export const getBooking = (roomMap: BookingsEntity[], time: string): BookingsEntity | undefined => {
   const filterStatus = roomMap.filter(room => room.time === time);
   if (filterStatus.length === 1) {
     return filterStatus[0];

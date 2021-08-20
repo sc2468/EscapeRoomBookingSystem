@@ -1,5 +1,5 @@
 import { BookingsEntity } from "../entities/Booking";
-import { ObjectType, Field } from "type-graphql";
+import { ObjectType, Field, InputType } from "type-graphql";
 
 @ObjectType()
 export class FieldError {
@@ -25,4 +25,26 @@ export class OperationResponse {
 
   @Field(() => Boolean, { nullable: true })
   success?: boolean;
+}
+
+@InputType()
+export class BookingInput {
+  @Field()
+  name: string;
+  @Field()
+  contactEmail: string;
+  @Field()
+  contactPhoneNumber: string;
+  @Field()
+  numberOfPeople: number;
+}
+
+@InputType()
+export class BookingItemInput {
+  @Field()
+  date: string;
+  @Field()
+  time: string;
+  @Field()
+  roomId: number;
 }

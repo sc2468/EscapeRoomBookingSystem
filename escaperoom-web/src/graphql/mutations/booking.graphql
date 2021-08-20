@@ -67,3 +67,31 @@ mutation CreateAvailableBooking($roomId: Float!, $bookingTime: String!, $booking
     }
   }
 }
+
+mutation CompleteBooking($escapeTime: Float!, $bookingId: Float!) {
+  CompleteBooking(escapeTime: $escapeTime, bookingId: $bookingId) {
+    errors {
+      field
+      message
+    }
+    booking {
+      id
+      time
+      date
+      roomId
+      status
+      team {
+        id
+        name
+        contactEmail
+        contactPhoneNumber
+        numberOfPeople
+      }
+      result {
+        id
+        escapeTime
+        notes
+      }
+    }
+  }
+}

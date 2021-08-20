@@ -16,8 +16,8 @@ export class BookingsEntity extends BaseEntity {
   @Column()
   time!: string
 
-  @Field(() => String)
-  @Column()
+  @Field(() => Float)
+  @Column({ type: 'bigint' })
   date!: string
 
   @Field(() => Int)
