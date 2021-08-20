@@ -1,9 +1,13 @@
 import React, { useMemo, useState } from 'react'
 import { BookingsEntity } from '../generated/graphql';
-import { Box, Button, Grid, GridItem, HStack, Input, Text } from '@chakra-ui/react';
-import { escapeRooms, roomTimes } from '../constance';
+import { Box, Button, Grid, GridItem, HStack, Input } from '@chakra-ui/react';
+import { bookingStatus, escapeRoom, escapeRooms, roomTime, roomTimes } from '../constance';
 import RoomCard from './molecules/RoomCard';
-import { createStatusDateHashMap, getBooking, getBookingStatus, getRoomMap } from '../untilies/bookingHelper';
+import { bookingStatusObject, createBookingDateHashMap, getBooking, getBookingStatus, getRoomMap } from '../untilies/bookingHelper';
+import TimeListItem from './molecules/TimeListItem';
+import CancelPopUp from './molecules/CancelPopUp'
+import CreateRoomPopUp from './molecules/CreateRoomPopUp';
+import BookRoomPopUp from './molecules/BookRoomPopUp';
 
 interface Props {
   bookingEntries: BookingsEntity[]
@@ -12,7 +16,20 @@ interface Props {
 export default function AdminBookingView({ bookingEntries }: Props) {
   const [date, setDate] = useState(new Date());
 
-  const dateHashMap = useMemo(() => createStatusDateHashMap(bookingEntries), bookingEntries)
+  const dateHashMap = useMemo(() => createBookingDateHashMap(bookingEntries), bookingEntries)
+
+  const getPopUpContent = (room: escapeRoom, time: roomTime, date: Date, bookingData?: BookingsEntity): React.ReactNode => {
+    if (bookingData) {
+      switch (bookingData.status) {
+        case bookingStatus.open:
+          //return <CancelPopUp bookingId={bookingData.id} />
+          return <BookRoomPopUp bookingData={bookingData} />
+        case bookingStatus.booked:
+
+      }
+    }
+    return <CreateRoomPopUp roomId={room.value} time={time.value} date={date} />
+  }
 
   const day = 60 * 60 * 24 * 1000;
   return (
@@ -30,18 +47,11 @@ export default function AdminBookingView({ bookingEntries }: Props) {
               <RoomCard roomId={room.value} roomName={room.name}>
                 {roomTimes.map(time => {
                   const bookingData = getBooking(roomMap, time.value);
-                  return bookingData ? (<Box borderWidth={1} width='100%' onClick={() => location.href = `bookRoom/${bookingData.id}`} >
-                    <HStack m={2} justifyContent='space-between' >
-                      <Text fontSize='1xl'>{time.startTime}</Text>
-                      <Text fontSize='1xl'>{getBookingStatus(bookingData)}</Text>
-                    </HStack>
-                  </Box>) : (
-                    <Box borderWidth={1} width='100%' bg={'lightgray'} >
-                      <HStack m={2} justifyContent='space-between' >
-                        <Text fontSize='1xl'>{time.startTime}</Text>
-                        <Text fontSize='1xl'>Unavailable</Text>
-                      </HStack>
-                    </Box>)
+                  return (<TimeListItem
+                    time={time.fullDisplayName}
+                    popoverContent={getPopUpContent(room, time, date, bookingData)}
+                    status={bookingData ? getBookingStatus(bookingData) : "Unavailable"}
+                  />)
                 })}
               </RoomCard>
             </GridItem>

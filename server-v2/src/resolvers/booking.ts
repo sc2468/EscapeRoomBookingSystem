@@ -53,13 +53,13 @@ export class BookingResolver {
     }
   }
 
-  @Mutation(() => BookingsEntity)
-  createAvailableBooking(
+  @Mutation(() => BookingResponse)
+  async createAvailableBooking(
     @Arg("date") date: string,
     @Arg("time") time: string,
     @Arg("roomId") roomId: number
-  ): Promise<BookingsEntity> {
-    return BookingsEntity.create({ roomId, date, time, status: bookingStatus.open }).save()
+  ): Promise<BookingResponse> {
+    return { booking: await BookingsEntity.create({ roomId, date, time, status: bookingStatus.open }).save() }
   }
 
   @Mutation(() => OperationResponse)
@@ -99,6 +99,25 @@ export class BookingResolver {
         errors: [{
           field: 'bookingId',
           message: "That booking is already booked"
+        }]
+      }
+    }
+  }
+
+  @Mutation(() => OperationResponse)
+  async CloseBooking(
+    @Arg("bookingId") bookingId: number
+  ): Promise<OperationResponse> {
+    const existingBooking = await BookingsEntity.findOne({ id: bookingId });
+    if (existingBooking && existingBooking.status === bookingStatus.open && existingBooking.status === bookingStatus.booked) {
+      existingBooking.status = bookingStatus.closed;
+      await BookingsEntity.save(existingBooking)
+      return { success: true };
+    } else {
+      return {
+        errors: [{
+          field: 'bookingId',
+          message: "That booking could not be closed or canceled"
         }]
       }
     }

@@ -4,7 +4,7 @@ import NextLink from 'next/link';
 
 export default function NavBar() {
   return (
-    <Flex bg={"tomato"} p={4} ml={'auto'}>
+    <Flex bg="tomato" p={4} ml="auto" position='sticky' top="0" zIndex="1">
       <NextLink href='/'>
         <Link paddingLeft={5}>Home</Link>
       </NextLink>
@@ -17,7 +17,7 @@ export default function NavBar() {
       <NextLink href='/admin/createRooms'>
         <Link paddingLeft={5}>Admin Create Room</Link>
       </NextLink>
-      <NextLink href='/admin/bookings'>
+      <NextLink href='/admin'>
         <Link paddingLeft={5}>Admin Bookings</Link>
       </NextLink>
     </Flex>

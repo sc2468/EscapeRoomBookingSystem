@@ -22,7 +22,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "src/untilies/booking"  ],
   "exclude": [
     "node_modules"
   ]

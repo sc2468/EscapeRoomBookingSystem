@@ -2,12 +2,12 @@ import { Box, Button, FormControl, FormLabel, Input, NumberDecrementStepper, Num
 import { Form, Formik } from 'formik';
 import { NextServer } from 'next/dist/server/next';
 import React from 'react'
-import { escapeRooms } from '../constance';
-import { BookingsEntity, useBookAvailableBookingMutation } from '../generated/graphql';
-import { roomBackgroundSelector } from '../untilies/roomBackgroundSelector';
-import { toErrorMap } from '../untilies/toErrorMap';
-import { InputField } from './InputField';
-import Layout from './Layout';
+import { escapeRooms } from '../../constance';
+import { BookingsEntity, useBookAvailableBookingMutation } from '../../generated/graphql';
+import { roomBackgroundSelector } from '../../untilies/roomBackgroundSelector';
+import { toErrorMap } from '../../untilies/toErrorMap';
+import { InputField } from '../atoms/InputField';
+import Layout from '../molecules/Layout';
 
 type Props = {
   booking: BookingsEntity
@@ -40,7 +40,6 @@ export default function BookingForm(props: Props) {
             console.log(errors);
           } else if (response.data?.BookAvailableBooking.booking) {
             console.log(response.data?.BookAvailableBooking.booking)
-
           }
         }}
       >

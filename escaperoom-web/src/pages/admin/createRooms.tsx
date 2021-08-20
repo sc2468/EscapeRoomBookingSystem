@@ -1,8 +1,8 @@
 import { Box, Button, Checkbox, FormControl, FormLabel, Select, Text, toast, useToast } from '@chakra-ui/react';
 import { Field, FieldProps, Form, Formik } from 'formik';
 import React from 'react'
-import { InputField } from '../../components/InputField';
-import Layout from '../../components/Layout';
+import { InputField } from '../../components/atoms/InputField';
+import Layout from '../../components/molecules/Layout';
 import { escapeRooms, roomTimes } from '../../constance';
 import { BookingItemInput, useCreateAvailableBookingsMutation } from '../../generated/graphql'
 import { toErrorMap } from '../../untilies/toErrorMap';

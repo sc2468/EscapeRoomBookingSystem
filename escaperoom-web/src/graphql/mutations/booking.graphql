@@ -29,3 +29,41 @@ mutation CreateAvailableBookings($createAvailableBookingsBookings: [BookingItemI
     }
   }
 }
+
+mutation CloseBooking($bookingId: Float!) {
+  CloseBooking(bookingId: $bookingId) {
+    errors {
+      field
+      message
+    }
+    success
+  }
+}
+
+mutation CreateAvailableBooking($roomId: Float!, $bookingTime: String!, $bookingDate: String!) {
+  createAvailableBooking(roomId: $roomId, time: $bookingTime, date: $bookingDate) {
+    booking {
+      id
+      time
+      date
+      roomId
+      status
+      team {
+        id
+        name
+        contactEmail
+        contactPhoneNumber
+        numberOfPeople
+      }
+      result {
+        id
+        escapeTime
+        notes
+      }
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

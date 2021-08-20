@@ -2,8 +2,8 @@ import { Text } from '@chakra-ui/react'
 import React from 'react'
 import { bookingStatus, escapeRooms } from '../constance'
 import { BookingsEntity } from '../generated/graphql'
-import BookingForm from './BookingForm'
-import Layout from './Layout'
+import BookingForm from './forms/BookingForm'
+import Layout from './molecules/Layout'
 
 interface Props {
   booking: BookingsEntity

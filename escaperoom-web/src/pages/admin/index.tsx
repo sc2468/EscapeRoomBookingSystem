@@ -1,5 +1,4 @@
-import React from 'react'
-import BookingView from '../../components/BookingView'
+import AdminBookingView from '../../components/AdminBookingView';
 import Error from '../../components/molecules/Error'
 import Layout from '../../components/molecules/Layout'
 import Loading from '../../components/molecules/Loading'
@@ -11,7 +10,7 @@ export default function index() {
     <Layout>
       {loading && <Loading />}
       {error && <Error />}
-      {(data && data.getBookings) && <BookingView bookingEntries={data.getBookings} />}
+      {(data && data.getBookings) && <AdminBookingView bookingEntries={data.getBookings} />}
     </Layout>
   )
 }

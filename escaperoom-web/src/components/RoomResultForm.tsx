@@ -5,8 +5,8 @@ import { escapeRooms } from '../constance';
 import { BookingsEntity, useBookAvailableBookingMutation } from '../generated/graphql';
 import { roomBackgroundSelector } from '../untilies/roomBackgroundSelector';
 import { toErrorMap } from '../untilies/toErrorMap';
-import { InputField } from './InputField';
-import Layout from './Layout';
+import { InputField } from './atoms/InputField';
+import Layout from './molecules/Layout';
 
 type Props = {
   booking: BookingsEntity
@@ -21,8 +21,6 @@ export default function RoomResultForm(props: Props) {
     day: 'numeric', // numeric, 2-digit
     year: 'numeric', // numeric, 2-digit
     month: 'long', // numeric, 2-digit, long, short, narrow
-    // hour: 'numeric', // numeric, 2-digit
-    // minute: 'numeric', // numeric, 2-digit
   });
 
   return (
@@ -65,7 +63,6 @@ export default function RoomResultForm(props: Props) {
                   <InputField name="contactEmail" placeholder="Contact Email" label="Contact Email" />
                 </Box>
                 <Box mt={4}>
-                  {/* <InputField name="numberOfPeople" placeholder="Number of People" label="Number Of People" type={'number'} /> */}
                   <NumberInput step={1} defaultValue={2} min={1} max={5}>
                     <NumberInputField />
                     <NumberInputStepper>
