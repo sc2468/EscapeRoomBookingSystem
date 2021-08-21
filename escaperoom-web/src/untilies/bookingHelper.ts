@@ -1,5 +1,6 @@
 import { bookingStatus } from "../constance";
 import { BookingsEntity } from "../generated/graphql";
+import { getStartOfDateSeconds } from "./getDateString";
 
 export const getBookingStatus = (booking: bookingStatusObject | BookingsEntity) => {
   switch (booking.status) {
@@ -57,7 +58,6 @@ export const createStatusDateHashMap = (bookingEntries: BookingsEntity[]): Booki
   } else {
     current[bookingDate] = { [booking.roomId]: [{ id: booking.id, time: booking.time, status: booking.status }] }
   }
-  console.log(current);
   return current;
 }, {});
 
@@ -71,7 +71,7 @@ export interface BookingDateMap {
 }
 
 export const getRoomMap = (dateHashMap: BookingDateMap, roomId: number, date: Date): BookingsEntity[] => {
-  const dateObject = dateHashMap[date.toLocaleDateString()];
+  const dateObject = dateHashMap[date.getTime()];
   if (dateObject && dateObject[roomId]) {
     return dateObject[roomId.toString()];
   }

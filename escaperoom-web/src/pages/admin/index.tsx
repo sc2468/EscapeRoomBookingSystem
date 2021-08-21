@@ -5,12 +5,12 @@ import Loading from '../../components/molecules/Loading'
 import { useGetBookingsQuery } from '../../generated/graphql'
 
 export default function index() {
-  const { error, loading, data } = useGetBookingsQuery({ variables: { limit: 3 } });
+  const { error, loading, data, fetchMore } = useGetBookingsQuery({ variables: { limit: 3, cursor: null } });
   return (
     <Layout>
       {loading && <Loading />}
       {error && <Error />}
-      {(data && data.getBookings) && <AdminBookingView bookingEntries={data.getBookings} />}
+      {(data && data.getBookings) && <AdminBookingView bookingEntries={data.getBookings} fetchMore={fetchMore} />}
     </Layout>
   )
 }

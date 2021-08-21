@@ -14,13 +14,12 @@ export class BookingResolver {
     @Arg('cursor', () => String, { nullable: true }) cursor: string | undefined
   ): Promise<BookingsEntity[]> {
     const day = 60 * 60 * 24 * 1000;
-    const startDate = cursor ? new Date(parseFloat(cursor)) : new Date();
-    const limitDate = startDate.getTime() + (day * limit);
-    console.log(getStartOfDateSeconds(startDate), limitDate)
+    const startDate = cursor ? cursor : getStartOfDateSeconds(new Date());
+    const limitDate = getStartOfDateSeconds(new Date(parseFloat(startDate) + (day * limit)));
     const queryBuilder = getConnection()
       .getRepository(BookingsEntity)
-      .createQueryBuilder('p')
-      .where('date >= :startDate AND date <= :limitDate', { startDate: startDate.getTime(), limitDate })
+      .createQueryBuilder('booking')
+      .where('`date` >= :startDate AND `date` <= :limitDate', { startDate: startDate, limitDate })
     return queryBuilder.getMany()
   }
 
