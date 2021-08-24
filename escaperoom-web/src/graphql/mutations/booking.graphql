@@ -30,13 +30,14 @@ mutation CreateAvailableBookings($createAvailableBookingsBookings: [BookingItemI
   }
 }
 
-mutation CloseBooking($bookingId: Float!) {
-  CloseBooking(bookingId: $bookingId) {
+mutation CloseOpenBooking($bookingId: Float!) {
+  CloseOpenBooking(bookingId: $bookingId) {
     errors {
       field
       message
     }
     success
+    bookingId
   }
 }
 

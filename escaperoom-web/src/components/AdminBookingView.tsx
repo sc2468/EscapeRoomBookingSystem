@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { BookingsEntity, Exact } from '../generated/graphql';
-import { Box, Button, Grid, GridItem, HStack, Input } from '@chakra-ui/react';
+import { Box, Button, Grid, GridItem, HStack, Input, Text } from '@chakra-ui/react';
 import { bookingStatus, escapeRoom, escapeRooms, roomTime, roomTimes } from '../constance';
 import RoomCard from './molecules/RoomCard';
 import { createBookingDateHashMap, getBooking, getBookingStatus, getRoomMap } from '../untilies/bookingHelper';
@@ -53,6 +53,7 @@ export default function AdminBookingView({ bookingEntries, fetchMore }: Props) {
 
   return (
     <Box m={4}>
+      <Text fontSize="4xl">Booking Schedule</Text>
       <HStack spacing="8">
         <Button colorScheme="teal" onClick={descDate} variant="solid">-</Button>
         <Input disabled value={date.toDateString()} textAlign={'center'} />

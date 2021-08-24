@@ -28,6 +28,6 @@ export const roomTimes = [
 export const bookingStatus = {
   open: 1,
   booked: 2,
-  completed: 3,
-  closed: 4,
+  closed: 3,
+  completed: 4,
 }

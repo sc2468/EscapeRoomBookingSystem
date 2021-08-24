@@ -25,6 +25,9 @@ export class OperationResponse {
 
   @Field(() => Boolean, { nullable: true })
   success?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  bookingId: number
 }
 
 @InputType()

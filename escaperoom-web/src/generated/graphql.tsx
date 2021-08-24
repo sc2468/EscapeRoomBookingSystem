@@ -35,7 +35,7 @@ export type BookingResponse = {
 
 export type BookingsEntity = {
   __typename?: 'BookingsEntity';
-  id: Scalars['Float'];
+  id: Scalars['ID'];
   time: Scalars['String'];
   date: Scalars['Float'];
   roomId: Scalars['Int'];
@@ -55,9 +55,9 @@ export type Mutation = {
   createAvailableBooking: BookingResponse;
   createAvailableBookings: OperationResponse;
   BookAvailableBooking: BookingResponse;
-  CloseBooking: OperationResponse;
+  CloseOpenBooking: OperationResponse;
+  CancelBookedBooking: OperationResponse;
   CompleteBooking: BookingResponse;
-  CloseOpenBooking: BookingResponse;
 };
 
 
@@ -79,7 +79,12 @@ export type MutationBookAvailableBookingArgs = {
 };
 
 
-export type MutationCloseBookingArgs = {
+export type MutationCloseOpenBookingArgs = {
+  bookingId: Scalars['Float'];
+};
+
+
+export type MutationCancelBookedBookingArgs = {
   bookingId: Scalars['Float'];
 };
 
@@ -89,15 +94,11 @@ export type MutationCompleteBookingArgs = {
   bookingId: Scalars['Float'];
 };
 
-
-export type MutationCloseOpenBookingArgs = {
-  bookingId: Scalars['Float'];
-};
-
 export type OperationResponse = {
   __typename?: 'OperationResponse';
   errors?: Maybe<Array<FieldError>>;
   success?: Maybe<Scalars['Boolean']>;
+  bookingId?: Maybe<Scalars['Boolean']>;
 };
 
 export type Query = {
@@ -122,6 +123,7 @@ export type ResultEntity = {
   id: Scalars['Int'];
   escapeTime: Scalars['Int'];
   notes?: Maybe<Scalars['String']>;
+  booking?: Maybe<BookingsEntity>;
 };
 
 export type TeamsEntity = {
@@ -131,6 +133,7 @@ export type TeamsEntity = {
   contactEmail: Scalars['String'];
   contactPhoneNumber: Scalars['String'];
   numberOfPeople: Scalars['Int'];
+  booking: Scalars['Int'];
 };
 
 export type BookAvailableBookingMutationVariables = Exact<{
@@ -174,16 +177,16 @@ export type CreateAvailableBookingsMutation = (
   ) }
 );
 
-export type CloseBookingMutationVariables = Exact<{
+export type CloseOpenBookingMutationVariables = Exact<{
   bookingId: Scalars['Float'];
 }>;
 
 
-export type CloseBookingMutation = (
+export type CloseOpenBookingMutation = (
   { __typename?: 'Mutation' }
-  & { CloseBooking: (
+  & { CloseOpenBooking: (
     { __typename?: 'OperationResponse' }
-    & Pick<OperationResponse, 'success'>
+    & Pick<OperationResponse, 'success' | 'bookingId'>
     & { errors?: Maybe<Array<(
       { __typename?: 'FieldError' }
       & Pick<FieldError, 'field' | 'message'>
@@ -381,43 +384,44 @@ export function useCreateAvailableBookingsMutation(baseOptions?: Apollo.Mutation
 export type CreateAvailableBookingsMutationHookResult = ReturnType<typeof useCreateAvailableBookingsMutation>;
 export type CreateAvailableBookingsMutationResult = Apollo.MutationResult<CreateAvailableBookingsMutation>;
 export type CreateAvailableBookingsMutationOptions = Apollo.BaseMutationOptions<CreateAvailableBookingsMutation, CreateAvailableBookingsMutationVariables>;
-export const CloseBookingDocument = gql`
-    mutation CloseBooking($bookingId: Float!) {
-  CloseBooking(bookingId: $bookingId) {
+export const CloseOpenBookingDocument = gql`
+    mutation CloseOpenBooking($bookingId: Float!) {
+  CloseOpenBooking(bookingId: $bookingId) {
     errors {
       field
       message
     }
     success
+    bookingId
   }
 }
     `;
-export type CloseBookingMutationFn = Apollo.MutationFunction<CloseBookingMutation, CloseBookingMutationVariables>;
+export type CloseOpenBookingMutationFn = Apollo.MutationFunction<CloseOpenBookingMutation, CloseOpenBookingMutationVariables>;
 
 /**
- * __useCloseBookingMutation__
+ * __useCloseOpenBookingMutation__
  *
- * To run a mutation, you first call `useCloseBookingMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCloseBookingMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCloseOpenBookingMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCloseOpenBookingMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [closeBookingMutation, { data, loading, error }] = useCloseBookingMutation({
+ * const [closeOpenBookingMutation, { data, loading, error }] = useCloseOpenBookingMutation({
  *   variables: {
  *      bookingId: // value for 'bookingId'
  *   },
  * });
  */
-export function useCloseBookingMutation(baseOptions?: Apollo.MutationHookOptions<CloseBookingMutation, CloseBookingMutationVariables>) {
+export function useCloseOpenBookingMutation(baseOptions?: Apollo.MutationHookOptions<CloseOpenBookingMutation, CloseOpenBookingMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CloseBookingMutation, CloseBookingMutationVariables>(CloseBookingDocument, options);
+        return Apollo.useMutation<CloseOpenBookingMutation, CloseOpenBookingMutationVariables>(CloseOpenBookingDocument, options);
       }
-export type CloseBookingMutationHookResult = ReturnType<typeof useCloseBookingMutation>;
-export type CloseBookingMutationResult = Apollo.MutationResult<CloseBookingMutation>;
-export type CloseBookingMutationOptions = Apollo.BaseMutationOptions<CloseBookingMutation, CloseBookingMutationVariables>;
+export type CloseOpenBookingMutationHookResult = ReturnType<typeof useCloseOpenBookingMutation>;
+export type CloseOpenBookingMutationResult = Apollo.MutationResult<CloseOpenBookingMutation>;
+export type CloseOpenBookingMutationOptions = Apollo.BaseMutationOptions<CloseOpenBookingMutation, CloseOpenBookingMutationVariables>;
 export const CreateAvailableBookingDocument = gql`
     mutation CreateAvailableBooking($roomId: Float!, $bookingTime: String!, $bookingDate: String!) {
   createAvailableBooking(roomId: $roomId, time: $bookingTime, date: $bookingDate) {

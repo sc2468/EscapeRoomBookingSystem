@@ -1,5 +1,6 @@
 import { Field, InputType, Int, ObjectType } from "type-graphql";
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BookingsEntity } from "./Booking";
 
 // class that typeorm will used to create a database table structure 
 @InputType()
@@ -19,7 +20,7 @@ export class ResultEntity extends BaseEntity {
   @Column({ nullable: true })
   notes!: string
 
-  // @Field(() => Int)
-  // @OneToOne(() => BookingsEntity, (booking: BookingsEntity) => booking.id)
-  // booking!: number;
+  @Field(() => BookingsEntity, { nullable: true })
+  @OneToOne(() => BookingsEntity, (booking: BookingsEntity) => booking.result)
+  booking!: BookingsEntity | null;
 }

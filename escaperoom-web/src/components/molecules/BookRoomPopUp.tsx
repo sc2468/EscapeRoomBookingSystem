@@ -1,12 +1,10 @@
-import { Box, Button, FormControl, FormLabel, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverFooter, PopoverHeader, Portal, Text, useToast } from '@chakra-ui/react'
+import { Box, Button, FormControl, FormLabel, HStack, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverFooter, PopoverHeader, Portal, Text, useToast } from '@chakra-ui/react'
 import { Formik, Form } from 'formik'
 import React from 'react'
 import { escapeRooms } from '../../constance'
-import { BookingsEntity, useBookAvailableBookingMutation } from '../../generated/graphql'
-import { bookingStatusObject } from '../../untilies/bookingHelper'
+import { BookingsEntity, GetBookingsDocument, GetBookingsQuery, useBookAvailableBookingMutation, useCloseOpenBookingMutation } from '../../generated/graphql'
 import { toErrorMap } from '../../untilies/toErrorMap'
 import { InputField } from '../atoms/InputField'
-//import { useCloseBookingMutation } from '../../generated/graphql'
 
 interface Props {
   bookingData: BookingsEntity;
@@ -15,7 +13,67 @@ interface Props {
 export default function BookRoomPopUp({ bookingData }: Props) {
 
   const toast = useToast()
-  const [bookAvailableBooking] = useBookAvailableBookingMutation();
+  const [bookAvailableBooking] = useBookAvailableBookingMutation({
+    // TODO As this is a update it should automatically but this is not work so manually doing it
+    update(cache, { data: { BookAvailableBooking } }) {
+      const bookingList = cache.readQuery<GetBookingsQuery>({
+        query: GetBookingsDocument
+      })
+      if (BookAvailableBooking && BookAvailableBooking.booking) {
+        const updatedBooking = BookAvailableBooking.booking;
+        const otherBookings = bookingList.getBookings.filter(booking => booking.id = updatedBooking.id)
+        cache.writeQuery({
+          query: GetBookingsDocument,
+          data: {
+            getBookings: [...otherBookings, updatedBooking]
+          }
+        })
+      }
+    }
+  }
+  );
+  const [closeBooking] = useCloseOpenBookingMutation({
+    // TODO As this is a update it should automatically but this is not work so manually doing it
+    update(cache, { data: { CloseOpenBooking } }) {
+      if (CloseOpenBooking && CloseOpenBooking.success && CloseOpenBooking.success === true) {
+        const closedBookingId = CloseOpenBooking.bookingId;
+
+        cache.modify({
+          fields: {
+            getBookings(existingBookings = []) {
+              const otherBookings = existingBookings.filter(booking => booking.id = closedBookingId)
+              return [...otherBookings];
+            }
+          }
+        })
+      }
+    }
+  });
+
+  const close = async () => {
+    const response = await closeBooking({ variables: { bookingId: Number.parseInt(bookingData.id) } });
+    if (response.data?.CloseOpenBooking.errors) {
+      const errors = response.data?.CloseOpenBooking.errors;
+      console.log(errors);
+      toast({
+        title: "Rooms Could not be closed.",
+        description: "",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      })
+    } else if (response.data?.CloseOpenBooking.success) {
+      console.log(response.data?.CloseOpenBooking.success);
+      toast({
+        title: "Rooms Closed.",
+        description: "The room was closed",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      })
+    }
+  }
+
   const { id, date, time, roomId, } = bookingData;
   const roomName = escapeRooms.filter(room => room.value === roomId)[0].name;
   const formattedDate = new Date(date).toLocaleString('en-US', {
@@ -32,7 +90,7 @@ export default function BookRoomPopUp({ bookingData }: Props) {
         numberOfPeople: 2
       }}
       onSubmit={async (values, { setErrors }) => {
-        const response = await bookAvailableBooking({ variables: { bookingId: id, options: { ...values } } })
+        const response = await bookAvailableBooking({ variables: { bookingId: parseInt(id), options: { ...values } } })
         if (response.data?.BookAvailableBooking.errors) {
           const errors = response.data?.BookAvailableBooking.errors;
           setErrors(toErrorMap(errors));
@@ -48,35 +106,38 @@ export default function BookRoomPopUp({ bookingData }: Props) {
             <PopoverArrow />
             <PopoverHeader>Book {roomName} on {formattedDate} at {time}</PopoverHeader>
             <PopoverCloseButton />
-            <Form>
-              <Box mt={4}>
-                <InputField name="name" placeholder="Team Name" label="Team Name" required />
-              </Box>
-              <Box mt={4}>
-                <InputField name="contactPhoneNumber" placeholder="Phone Number" label="Phone Number" required />
-              </Box>
-              <Box mt={4}>
-                <InputField name="contactEmail" placeholder="Contact Email" label="Contact Email" required />
-              </Box>
-              <Box mt={4}>
-                <FormControl isRequired>
-                  <FormLabel>Number of People</FormLabel>
-                  <NumberInput step={1} defaultValue={2} min={1} max={5} >
-                    <NumberInputField />
-                    <NumberInputStepper>
-                      <NumberIncrementStepper />
-                      <NumberDecrementStepper />
-                    </NumberInputStepper>
-                  </NumberInput>
-                </FormControl>
-                <Text fontSize="1xl">Price for <b>{numberOfPeople}</b> is <b>${numberOfPeople * 25}</b></Text>
-              </Box>
-              <Box mt={4}>
-              </Box>
-            </Form>
-            <PopoverFooter>
-              <Button mt={4} type="submit" bgColor={'teal'} variant="solid" isLoading={isSubmitting}>Book Room</Button>
-            </PopoverFooter>
+            <Box m={2}>
+              <Form>
+                <Box mt={2}>
+                  <InputField name="name" placeholder="Team Name" label="Team Name" required />
+                </Box>
+                <Box mt={2}>
+                  <InputField name="contactPhoneNumber" placeholder="Phone Number" label="Phone Number" required />
+                </Box>
+                <Box mt={2}>
+                  <InputField name="contactEmail" placeholder="Contact Email" label="Contact Email" required />
+                </Box>
+                <Box mt={2}>
+                  <FormControl isRequired>
+                    <FormLabel>Number of People</FormLabel>
+                    <NumberInput step={1} defaultValue={2} min={1} max={5} >
+                      <NumberInputField />
+                      <NumberInputStepper>
+                        <NumberIncrementStepper />
+                        <NumberDecrementStepper />
+                      </NumberInputStepper>
+                    </NumberInput>
+                  </FormControl>
+                  <Text fontSize="1xl">Price for <b>{numberOfPeople}</b> is <b>${numberOfPeople * 25}</b></Text>
+                </Box>
+                <Box mt={2}>
+                </Box>
+                <HStack justifyContent="space-between">
+                  <Button mt={2} type="submit" bgColor={'teal'} variant="solid" isLoading={isSubmitting}>Book Room</Button>
+                  <Button mt={2} bgColor={'teal'} variant="solid" isLoading={isSubmitting} onClick={close}>Close Booking</Button>
+                </HStack>
+              </Form>
+            </Box>
           </PopoverContent>
         </Portal>
       )}
