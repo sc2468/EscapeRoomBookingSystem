@@ -194,6 +194,23 @@ export type CloseOpenBookingMutation = (
   ) }
 );
 
+export type CancelBookedBookingMutationVariables = Exact<{
+  bookingId: Scalars['Float'];
+}>;
+
+
+export type CancelBookedBookingMutation = (
+  { __typename?: 'Mutation' }
+  & { CancelBookedBooking: (
+    { __typename?: 'OperationResponse' }
+    & Pick<OperationResponse, 'success' | 'bookingId'>
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>> }
+  ) }
+);
+
 export type CreateAvailableBookingMutationVariables = Exact<{
   roomId: Scalars['Float'];
   bookingTime: Scalars['String'];
@@ -422,6 +439,44 @@ export function useCloseOpenBookingMutation(baseOptions?: Apollo.MutationHookOpt
 export type CloseOpenBookingMutationHookResult = ReturnType<typeof useCloseOpenBookingMutation>;
 export type CloseOpenBookingMutationResult = Apollo.MutationResult<CloseOpenBookingMutation>;
 export type CloseOpenBookingMutationOptions = Apollo.BaseMutationOptions<CloseOpenBookingMutation, CloseOpenBookingMutationVariables>;
+export const CancelBookedBookingDocument = gql`
+    mutation CancelBookedBooking($bookingId: Float!) {
+  CancelBookedBooking(bookingId: $bookingId) {
+    errors {
+      field
+      message
+    }
+    success
+    bookingId
+  }
+}
+    `;
+export type CancelBookedBookingMutationFn = Apollo.MutationFunction<CancelBookedBookingMutation, CancelBookedBookingMutationVariables>;
+
+/**
+ * __useCancelBookedBookingMutation__
+ *
+ * To run a mutation, you first call `useCancelBookedBookingMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCancelBookedBookingMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [cancelBookedBookingMutation, { data, loading, error }] = useCancelBookedBookingMutation({
+ *   variables: {
+ *      bookingId: // value for 'bookingId'
+ *   },
+ * });
+ */
+export function useCancelBookedBookingMutation(baseOptions?: Apollo.MutationHookOptions<CancelBookedBookingMutation, CancelBookedBookingMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CancelBookedBookingMutation, CancelBookedBookingMutationVariables>(CancelBookedBookingDocument, options);
+      }
+export type CancelBookedBookingMutationHookResult = ReturnType<typeof useCancelBookedBookingMutation>;
+export type CancelBookedBookingMutationResult = Apollo.MutationResult<CancelBookedBookingMutation>;
+export type CancelBookedBookingMutationOptions = Apollo.BaseMutationOptions<CancelBookedBookingMutation, CancelBookedBookingMutationVariables>;
 export const CreateAvailableBookingDocument = gql`
     mutation CreateAvailableBooking($roomId: Float!, $bookingTime: String!, $bookingDate: String!) {
   createAvailableBooking(roomId: $roomId, time: $bookingTime, date: $bookingDate) {

@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
-import { BookingsEntity, Exact } from '../generated/graphql';
-import { Box, Button, Grid, GridItem, HStack, Input, Text } from '@chakra-ui/react';
+import { BookingsEntity } from '../generated/graphql';
+import { Box, Button, Grid, GridItem, HStack, Input, Link, PopoverArrow, PopoverCloseButton, PopoverContent, PopoverHeader, Text } from '@chakra-ui/react';
 import { bookingStatus, escapeRoom, escapeRooms, roomTime, roomTimes } from '../constance';
 import RoomCard from './molecules/RoomCard';
 import { createBookingDateHashMap, getBooking, getBookingStatus, getRoomMap } from '../untilies/bookingHelper';
@@ -9,6 +9,7 @@ import CreateRoomPopUp from './molecules/CreateRoomPopUp';
 import BookRoomPopUp from './molecules/BookRoomPopUp';
 import CompleteRoomPopUp from './molecules/CompleteRoomPopUp';
 import { changeDate, getStartOfDate } from '../untilies/getDateString';
+import NextLink from 'next/link';
 
 interface Props {
   bookingEntries: BookingsEntity[],
@@ -27,6 +28,22 @@ export default function AdminBookingView({ bookingEntries, fetchMore }: Props) {
           return <BookRoomPopUp bookingData={bookingData} />
         case bookingStatus.booked:
           return <CompleteRoomPopUp bookingData={bookingData} />
+        case bookingStatus.completed:
+          return (<PopoverContent bg="white">
+            <PopoverArrow />
+            <PopoverHeader>Booking Finished</PopoverHeader>
+            <PopoverCloseButton />
+            <Text m={4}>{`Completed by ${bookingData.team.name}in ${bookingData.result.escapeTime}`}</Text>
+          </PopoverContent>
+          )
+        case bookingStatus.closed:
+          return (<PopoverContent bg="white">
+            <PopoverArrow />
+            <PopoverHeader>Booking Closed</PopoverHeader>
+            <PopoverCloseButton />
+            <Text m={4}>This booking cannot be re-opened</Text>
+          </PopoverContent>
+          )
       }
     }
     return <CreateRoomPopUp roomId={room.value} time={time.value} date={date} />
@@ -50,11 +67,15 @@ export default function AdminBookingView({ bookingEntries, fetchMore }: Props) {
     }
   }
 
-
   return (
     <Box m={4}>
-      <Text fontSize="4xl">Booking Schedule</Text>
-      <HStack spacing="8">
+      <HStack spacing="2">
+        <Text fontSize="4xl">Booking Schedule</Text>
+        <NextLink href='admin/createRooms'>
+          <Link paddingLeft={5}>Multiple Booking</Link>
+        </NextLink>
+      </HStack>
+      <HStack spacing="4">
         <Button colorScheme="teal" onClick={descDate} variant="solid">-</Button>
         <Input disabled value={date.toDateString()} textAlign={'center'} />
         <Button colorScheme="teal" onClick={increaseDate} variant="solid">+</Button>
@@ -63,14 +84,13 @@ export default function AdminBookingView({ bookingEntries, fetchMore }: Props) {
         <Grid gap={2} templateColumns={{ md: "repeat(3, 1fr)", base: "repeat(1, 1fr)" }}>
           {escapeRooms.map(room => {
             const roomMap = getRoomMap(dateHashMap, room.value, date);
-            //console.log(roomMap);
             return (<GridItem key={`roomItem-${room.value}`} colSpan={1} m={2} backgroundColor='gray.100' alignItems='center' alignContent='center'>
               <RoomCard roomId={room.value} roomName={room.name}>
                 {roomTimes.map(time => {
                   const bookingData = getBooking(roomMap, time.value);
                   return (<TimeListItem
                     key={`roomItem-${room.value}-time-${time.value}`}
-                    time={time.fullDisplayName}
+                    time={time.startTime}
                     popoverContent={getPopUpContent(room, time, date, bookingData)}
                     status={bookingData ? getBookingStatus(bookingData) : "Unavailable"}
                   />)
@@ -80,7 +100,7 @@ export default function AdminBookingView({ bookingEntries, fetchMore }: Props) {
             )
           })}
         </Grid>
-      </Box>
+      </Box >
     </Box >
   );
 }

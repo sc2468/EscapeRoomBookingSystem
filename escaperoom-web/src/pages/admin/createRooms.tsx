@@ -7,17 +7,19 @@ import { escapeRooms, roomTimes } from '../../constance';
 import { BookingItemInput, useCreateAvailableBookingsMutation } from '../../generated/graphql'
 import { getStartOfDateSeconds } from '../../untilies/getDateString';
 import { toErrorMap } from '../../untilies/toErrorMap';
+import { deleteBookingEntityCache } from '../../untilies/deleteListItemsFromCache';
+import { useApolloClient } from '@apollo/client';
 
 export default function createRooks() {
-  const [bulkCreate] = useCreateAvailableBookingsMutation();
+  const [bulkCreate] = useCreateAvailableBookingsMutation()
   const toast = useToast()
-
+  const client = useApolloClient();
   return (
     <Layout>
       <Box m={4}>
         <Formik
           initialValues={{
-            roomId: 1,
+            roomId: 0,
             day: new Date().toISOString().slice(0, 10),
             time: [],
           }}
@@ -40,6 +42,10 @@ export default function createRooks() {
                 duration: 9000,
                 isClosable: true,
               })
+              // clean the store to stop errors with pagination we don't want to use 
+              // client.resetStore here as that will result in booking query being 
+              // refetch which might be deleted again if more rooms are created using this page 
+              client.clearStore();
             }
           }}
         >

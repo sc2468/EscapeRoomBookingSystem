@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, FormLabel, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverFooter, PopoverHeader, Portal, Text, useToast } from '@chakra-ui/react'
+import { Box, Button, FormControl, FormLabel, HStack, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverFooter, PopoverHeader, Portal, Text, useToast } from '@chakra-ui/react'
 import { Formik, Form } from 'formik'
 import React from 'react'
 import { escapeRooms } from '../../constance'
@@ -22,13 +22,18 @@ export default function CompleteRoomPopUp({ bookingData }: Props) {
     year: 'numeric', // numeric, 2-digit
     month: 'long', // numeric, 2-digit, long, short, narrow
   });
+
+  const cancelBooking = () => {
+
+  }
+
   return (
     <Formik
       initialValues={{
         escapeTime: "",
       }}
       onSubmit={async (values, { setErrors }) => {
-        const response = await completeBooking({ variables: { bookingId: id, escapeTime: Number.parseInt(values.escapeTime) } })
+        const response = await completeBooking({ variables: { bookingId: Number.parseInt(id), escapeTime: Number.parseInt(values.escapeTime) } })
         if (response.data?.CompleteBooking.errors) {
           const errors = response.data?.CompleteBooking.errors;
           setErrors(toErrorMap(errors));
@@ -61,12 +66,13 @@ export default function CompleteRoomPopUp({ bookingData }: Props) {
             <PopoverCloseButton />
             <Form>
               <Box mt={4}>
-                <InputField name="escape time" placeholder="Escape Time" label="Escape Time" required />
+                <InputField name="escapeTime" placeholder="Escape Time" label="Escape Time" required />
               </Box>
+              <HStack justifyContent={'space-between'}>
+                <Button mt={4} type="submit" bgColor={'teal'} variant="solid" isLoading={isSubmitting}>Enter</Button>
+                <Button mt={4} bgColor={'teal'} variant="solid" onClick={cancelBooking}>Cancel</Button>
+              </HStack>
             </Form>
-            <PopoverFooter>
-              <Button mt={4} type="submit" bgColor={'teal'} variant="solid" isLoading={isSubmitting}>Enter</Button>
-            </PopoverFooter>
           </PopoverContent>
         </Portal>
       )}

@@ -41,6 +41,17 @@ mutation CloseOpenBooking($bookingId: Float!) {
   }
 }
 
+mutation CancelBookedBooking($bookingId: Float!) {
+  CancelBookedBooking(bookingId: $bookingId) {
+    errors {
+      field
+      message
+    }
+    success
+    bookingId
+  }
+}
+
 mutation CreateAvailableBooking($roomId: Float!, $bookingTime: String!, $bookingDate: String!) {
   createAvailableBooking(roomId: $roomId, time: $bookingTime, date: $bookingDate) {
     booking {

@@ -134,7 +134,7 @@ export default function BookRoomPopUp({ bookingData }: Props) {
                 </Box>
                 <HStack justifyContent="space-between">
                   <Button mt={2} type="submit" bgColor={'teal'} variant="solid" isLoading={isSubmitting}>Book Room</Button>
-                  <Button mt={2} bgColor={'teal'} variant="solid" isLoading={isSubmitting} onClick={close}>Close Booking</Button>
+                  <Button mt={2} bgColor={'teal'} variant="solid" onClick={close}>Close Booking</Button>
                 </HStack>
               </Form>
             </Box>

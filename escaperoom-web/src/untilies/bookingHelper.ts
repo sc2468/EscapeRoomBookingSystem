@@ -13,7 +13,7 @@ export const getBookingStatus = (booking: bookingStatusObject | BookingsEntity) 
     case bookingStatus.completed:
       return "Complete"
     default:
-      return "Unavailable"
+      return "Not Open Yet"
   }
 }
 
