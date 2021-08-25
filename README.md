@@ -20,6 +20,8 @@ Currently Supported Backend operations
 
 For instructions on how to setup and configure the graphql server see the readme in the server folder
 
+# Frontend
+
 Current Front end status
 
 * Home page: not implemented
@@ -41,7 +43,3 @@ Reason I chose to use graphql over rest
 * wanted to take advantage of graphql's flexable nature to rappialy change API resonses as I prototype dirrent frontend implemenntation.
 * Greater control over returned data
 * leverage its self documenting nature to cut down on the ammount of documentation I was required to write.
-
-
-# Frontend
-
