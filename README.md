@@ -25,10 +25,10 @@ Current Front end status
 * Home page: not implemented
 * Room page: initial implementation
 * Room Booking: Currently Broken
-* Admin Room overview page: implementated (some UI bug but workflows working)
+* Admin Room overview page: implementated
   * Date base Pagination (loads next 3 days of bookings, when viewing next day outside this range gets required booking data)
   * Open an escapseRoom time slot: implementated
-  * Book open escape room time slot: implementated
+  * Book open escape room time slot: implementated (UI bugs)
   * Close an existing unbooked escape room time slot: implementated
   * Cancel an escape room booking for a given time slot: implemented
   * Enter a result for a escape room time slot: implemented
