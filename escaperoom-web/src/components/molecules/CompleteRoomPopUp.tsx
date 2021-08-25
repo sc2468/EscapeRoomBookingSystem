@@ -2,10 +2,9 @@ import { Box, Button, FormControl, FormLabel, HStack, NumberDecrementStepper, Nu
 import { Formik, Form } from 'formik'
 import React from 'react'
 import { escapeRooms } from '../../constance'
-import { BookingsEntity, useCompleteBookingMutation } from '../../generated/graphql';
+import { BookingsEntity, useCancelBookedBookingMutation, useCompleteBookingMutation } from '../../generated/graphql';
 import { toErrorMap } from '../../untilies/toErrorMap'
 import { InputField } from '../atoms/InputField'
-//import { useCloseBookingMutation } from '../../generated/graphql'
 
 interface Props {
   bookingData: BookingsEntity;
@@ -14,7 +13,8 @@ interface Props {
 export default function CompleteRoomPopUp({ bookingData }: Props) {
 
   const toast = useToast()
-  const [completeBooking] = useCompleteBookingMutation()
+  const [completeBooking] = useCompleteBookingMutation();
+  const [cancelBooking] = useCancelBookedBookingMutation();
   const { id, date, time, roomId, } = bookingData;
   const roomName = escapeRooms.filter(room => room.value === roomId)[0].name;
   const formattedDate = new Date(date).toLocaleString('en-US', {
@@ -23,8 +23,28 @@ export default function CompleteRoomPopUp({ bookingData }: Props) {
     month: 'long', // numeric, 2-digit, long, short, narrow
   });
 
-  const cancelBooking = () => {
-
+  const cancel = async () => {
+    const response = await cancelBooking({ variables: { bookingId: Number.parseInt(id) } })
+    if (response.data?.CancelBookedBooking.errors) {
+      const errors = response.data?.CancelBookedBooking.errors;
+      console.log(errors);
+      toast({
+        title: "Failed to Cancel Booking.",
+        description: "We could not cancel this booking due to an error.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      })
+    } else if (response.data?.CancelBookedBooking.success) {
+      console.log(response.data?.CancelBookedBooking.success)
+      toast({
+        title: "Booking Canceled",
+        description: "The room booking has been canceled.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      })
+    }
   }
 
   return (
@@ -70,7 +90,7 @@ export default function CompleteRoomPopUp({ bookingData }: Props) {
               </Box>
               <HStack justifyContent={'space-between'}>
                 <Button mt={4} type="submit" bgColor={'teal'} variant="solid" isLoading={isSubmitting}>Enter</Button>
-                <Button mt={4} bgColor={'teal'} variant="solid" onClick={cancelBooking}>Cancel</Button>
+                <Button mt={4} bgColor={'teal'} variant="solid" onClick={cancel}>Cancel</Button>
               </HStack>
             </Form>
           </PopoverContent>

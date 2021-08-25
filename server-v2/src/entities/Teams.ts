@@ -28,7 +28,6 @@ export class TeamsEntity extends BaseEntity {
   @Column()
   numberOfPeople!: number;
 
-  @Field(() => Int)
   @OneToOne(() => BookingsEntity, (booking: BookingsEntity) => booking.team)
   booking!: BookingsEntity;
 }

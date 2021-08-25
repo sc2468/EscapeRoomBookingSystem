@@ -1,21 +1,44 @@
+# mutation BookAvailableBooking($bookingId: Float!, $options: BookingInput! ) {
+#   BookAvailableBooking(options: $options, bookingId: $bookingId) {
+#     booking {
+#       id,
+#       date
+#       time
+#       roomId
+#       status
+#       team {
+#         name
+#         contactEmail
+#         contactPhoneNumber
+#         numberOfPeople
+#       }
+#     }
+#     errors {
+#       field,
+#       message
+#     }
+#   }
+# }
+
 mutation BookAvailableBooking($bookingId: Float!, $options: BookingInput! ) {
   BookAvailableBooking(options: $options, bookingId: $bookingId) {
+    errors {
+      field
+      message
+    }
     booking {
-      id,
-      date
+      id
       time
+      date
       roomId
       status
       team {
+        id
         name
         contactEmail
         contactPhoneNumber
         numberOfPeople
       }
-    }
-    errors {
-      field,
-      message
     }
   }
 }

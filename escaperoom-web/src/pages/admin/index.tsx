@@ -6,6 +6,7 @@ import { useGetBookingsQuery } from '../../generated/graphql'
 
 export default function index() {
   const { error, loading, data, fetchMore } = useGetBookingsQuery({ variables: { limit: 3, cursor: null } });
+  console.log('new data', data)
   return (
     <Layout>
       {loading && <Loading />}

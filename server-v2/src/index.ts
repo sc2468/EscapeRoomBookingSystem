@@ -21,7 +21,7 @@ const main = async () => {
     password: "password",
     logging: !__prod__,
     // to get database tables to be generated switch this to true
-    synchronize: false,
+    synchronize: true,
     entities: [TeamsEntity, BookingsEntity, ResultEntity],
   });
 

@@ -20,7 +20,6 @@ export class ResultEntity extends BaseEntity {
   @Column({ nullable: true })
   notes!: string
 
-  @Field(() => BookingsEntity, { nullable: true })
   @OneToOne(() => BookingsEntity, (booking: BookingsEntity) => booking.result)
   booking!: BookingsEntity | null;
 }

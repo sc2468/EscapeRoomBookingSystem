@@ -123,7 +123,6 @@ export type ResultEntity = {
   id: Scalars['Int'];
   escapeTime: Scalars['Int'];
   notes?: Maybe<Scalars['String']>;
-  booking?: Maybe<BookingsEntity>;
 };
 
 export type TeamsEntity = {
@@ -133,7 +132,6 @@ export type TeamsEntity = {
   contactEmail: Scalars['String'];
   contactPhoneNumber: Scalars['String'];
   numberOfPeople: Scalars['Int'];
-  booking: Scalars['Int'];
 };
 
 export type BookAvailableBookingMutationVariables = Exact<{
@@ -146,17 +144,17 @@ export type BookAvailableBookingMutation = (
   { __typename?: 'Mutation' }
   & { BookAvailableBooking: (
     { __typename?: 'BookingResponse' }
-    & { booking?: Maybe<(
-      { __typename?: 'BookingsEntity' }
-      & Pick<BookingsEntity, 'id' | 'date' | 'time' | 'roomId' | 'status'>
-      & { team?: Maybe<(
-        { __typename?: 'TeamsEntity' }
-        & Pick<TeamsEntity, 'name' | 'contactEmail' | 'contactPhoneNumber' | 'numberOfPeople'>
-      )> }
-    )>, errors?: Maybe<Array<(
+    & { errors?: Maybe<Array<(
       { __typename?: 'FieldError' }
       & Pick<FieldError, 'field' | 'message'>
-    )>> }
+    )>>, booking?: Maybe<(
+      { __typename?: 'BookingsEntity' }
+      & Pick<BookingsEntity, 'id' | 'time' | 'date' | 'roomId' | 'status'>
+      & { team?: Maybe<(
+        { __typename?: 'TeamsEntity' }
+        & Pick<TeamsEntity, 'id' | 'name' | 'contactEmail' | 'contactPhoneNumber' | 'numberOfPeople'>
+      )> }
+    )> }
   ) }
 );
 
@@ -317,22 +315,23 @@ export type GetBookingsQuery = (
 export const BookAvailableBookingDocument = gql`
     mutation BookAvailableBooking($bookingId: Float!, $options: BookingInput!) {
   BookAvailableBooking(options: $options, bookingId: $bookingId) {
+    errors {
+      field
+      message
+    }
     booking {
       id
-      date
       time
+      date
       roomId
       status
       team {
+        id
         name
         contactEmail
         contactPhoneNumber
         numberOfPeople
       }
-    }
-    errors {
-      field
-      message
     }
   }
 }

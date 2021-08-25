@@ -9,7 +9,7 @@ interface Props {
 
 export default function TimeListItem({ popoverContent, time, status }: Props) {
   return (
-    <Popover>
+    <Popover isLazy>
       <PopoverTrigger>
         <Box borderWidth={1} width='100%' bg={'lightgray'} >
           <HStack m={2} justifyContent='space-between' >

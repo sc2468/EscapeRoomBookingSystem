@@ -19,6 +19,12 @@ export class BookingResponse {
 }
 
 @ObjectType()
+export class ReturnError {
+  @Field(() => [FieldError])
+  errors?: FieldError[];
+}
+
+@ObjectType()
 export class OperationResponse {
   @Field(() => [FieldError], { nullable: true })
   errors?: FieldError[];

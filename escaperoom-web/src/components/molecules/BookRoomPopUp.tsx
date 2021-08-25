@@ -1,3 +1,4 @@
+import { gql } from '@apollo/client'
 import { Box, Button, FormControl, FormLabel, HStack, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverFooter, PopoverHeader, Portal, Text, useToast } from '@chakra-ui/react'
 import { Formik, Form } from 'formik'
 import React from 'react'
@@ -14,34 +15,37 @@ export default function BookRoomPopUp({ bookingData }: Props) {
 
   const toast = useToast()
   const [bookAvailableBooking] = useBookAvailableBookingMutation({
-    // TODO As this is a update it should automatically but this is not work so manually doing it
+    // TODO As this is a update it should automatically but this is not work so manually doing it.
+    // have chosen to use write fragment to update booking instead of writeQuery as writeQuery results 
+    // in a bug with the pagination merging code in the InMemoryCache 
     update(cache, { data: { BookAvailableBooking } }) {
-      const bookingList = cache.readQuery<GetBookingsQuery>({
-        query: GetBookingsDocument
-      })
       if (BookAvailableBooking && BookAvailableBooking.booking) {
-        const updatedBooking = BookAvailableBooking.booking;
-        const otherBookings = bookingList.getBookings.filter(booking => booking.id = updatedBooking.id)
-        cache.writeQuery({
-          query: GetBookingsDocument,
-          data: {
-            getBookings: [...otherBookings, updatedBooking]
+        const bookingData = BookAvailableBooking.booking
+        cache.writeFragment({
+          id: `BookingEntity${bookingData.id}`,
+          fragment: gql`
+          fragment bookingFragment on BookingEntity {
+            team
+            status
           }
-        })
+        `,
+          data: {
+            team: bookingData.team,
+            status: bookingData.status,
+          },
+        });
       }
     }
-  }
-  );
+  });
+
   const [closeBooking] = useCloseOpenBookingMutation({
-    // TODO As this is a update it should automatically but this is not work so manually doing it
     update(cache, { data: { CloseOpenBooking } }) {
       if (CloseOpenBooking && CloseOpenBooking.success && CloseOpenBooking.success === true) {
         const closedBookingId = CloseOpenBooking.bookingId;
-
         cache.modify({
           fields: {
             getBookings(existingBookings = []) {
-              const otherBookings = existingBookings.filter(booking => booking.id = closedBookingId)
+              const otherBookings = existingBookings.filter(booking => booking.id === closedBookingId)
               return [...otherBookings];
             }
           }
@@ -82,31 +86,31 @@ export default function BookRoomPopUp({ bookingData }: Props) {
     month: 'long', // numeric, 2-digit, long, short, narrow
   });
   return (
-    <Formik
-      initialValues={{
-        name: "",
-        contactPhoneNumber: "",
-        contactEmail: "",
-        numberOfPeople: 2
-      }}
-      onSubmit={async (values, { setErrors }) => {
-        const response = await bookAvailableBooking({ variables: { bookingId: parseInt(id), options: { ...values } } })
-        if (response.data?.BookAvailableBooking.errors) {
-          const errors = response.data?.BookAvailableBooking.errors;
-          setErrors(toErrorMap(errors));
-          console.log(errors);
-        } else if (response.data?.BookAvailableBooking.booking) {
-          console.log(response.data?.BookAvailableBooking.booking)
-        }
-      }}
-    >
-      {({ isSubmitting, values: { numberOfPeople } }) => (
-        <Portal>
-          <PopoverContent bg="white">
-            <PopoverArrow />
-            <PopoverHeader>Book {roomName} on {formattedDate} at {time}</PopoverHeader>
-            <PopoverCloseButton />
-            <Box m={2}>
+    <Portal>
+      <PopoverContent bg="white">
+        <PopoverArrow />
+        <PopoverHeader>Book {roomName} on {formattedDate} at {time}</PopoverHeader>
+        <PopoverCloseButton />
+        <Box m={2}>
+          <Formik
+            initialValues={{
+              name: "",
+              contactPhoneNumber: "",
+              contactEmail: "",
+              numberOfPeople: 2
+            }}
+            onSubmit={async (values, { setErrors }) => {
+              const response = await bookAvailableBooking({ variables: { bookingId: parseInt(id), options: { ...values } } })
+              if (response.data?.BookAvailableBooking.errors) {
+                const errors = response.data?.BookAvailableBooking.errors;
+                setErrors(toErrorMap(errors));
+                console.log(errors);
+              } else if (response.data?.BookAvailableBooking.booking) {
+                console.log(response.data?.BookAvailableBooking.booking)
+              }
+            }}
+          >
+            {({ isSubmitting, values: { numberOfPeople } }) => (
               <Form>
                 <Box mt={2}>
                   <InputField name="name" placeholder="Team Name" label="Team Name" required />
@@ -137,10 +141,10 @@ export default function BookRoomPopUp({ bookingData }: Props) {
                   <Button mt={2} bgColor={'teal'} variant="solid" onClick={close}>Close Booking</Button>
                 </HStack>
               </Form>
-            </Box>
-          </PopoverContent>
-        </Portal>
-      )}
-    </Formik >
+            )}
+          </Formik >
+        </Box>
+      </PopoverContent>
+    </Portal>
   )
 }
