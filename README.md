@@ -1,6 +1,8 @@
 # EscapeRoomBookingSystem
 This is an escape room booking system written for my personal use in the future. It contains a express graphql server and react with Apollo frontend which contsumes the graphql backend data. 
 
+# Note the currnet implementation is spike code and is not fit for production
+
 # Backend
 
 The Graphql server is implemented using express's implementation of the gralhql standard. The database interactions are handeled by the typeorm library.
