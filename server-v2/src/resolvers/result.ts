@@ -12,7 +12,7 @@ export class ResultResolver {
     @Arg("bookingId") bookingId: number,
     @Arg("escapeTime") escapeTime: number,
   ): Promise<BookingResponse> {
-    const existingBooking = await BookingsEntity.findOne({ id: bookingId });
+    const existingBooking = await BookingsEntity.findOne({ id: bookingId }, { relations: ['team'], });
     if (existingBooking && existingBooking.status === bookingStatus.booked) {
       const result = await ResultEntity.create({ escapeTime: escapeTime });
       const savedResult = await ResultEntity.save(result);

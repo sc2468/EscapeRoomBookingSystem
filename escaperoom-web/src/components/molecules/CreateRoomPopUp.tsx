@@ -10,22 +10,24 @@ interface Props {
 }
 
 export default function CreateRoomPopUp({ roomId, time, date }: Props) {
-  const [createBooking,] = useCreateAvailableBookingMutation({
-    update(cache, { data: { createAvailableBooking } }) {
-      const bookingList = cache.readQuery<GetBookingsQuery>({
-        query: GetBookingsDocument
-      })
-      if (createAvailableBooking.booking) {
-        cache.modify({
-          fields: {
-            getBookings(existingBookings = []) {
-              return [...existingBookings, createAvailableBooking.booking];
-            }
-          }
+  const [createBooking,] = useCreateAvailableBookingMutation(
+    {
+      update(cache, { data: { createAvailableBooking } }) {
+        const bookingList = cache.readQuery<GetBookingsQuery>({
+          query: GetBookingsDocument
         })
+        if (createAvailableBooking.booking) {
+          cache.modify({
+            fields: {
+              getBookings(existingBookings = []) {
+                return [...existingBookings, createAvailableBooking.booking];
+              }
+            }
+          })
+        }
       }
     }
-  })
+  )
 
   const toast = useToast()
 
