@@ -35,7 +35,7 @@ export default function RoomResultForm(props: Props) {
               numberOfPeople: 2
             }}
             onSubmit={async (values, { setErrors }) => {
-              const response = await bookAvailableBooking({ variables: { bookingId: id, options: { ...values } } })
+              const response = await bookAvailableBooking({ variables: { bookingId: parseInt(id), options: { ...values } } })
               if (response.data?.BookAvailableBooking.errors) {
                 const errors = response.data?.BookAvailableBooking.errors;
                 setErrors(toErrorMap(errors));
