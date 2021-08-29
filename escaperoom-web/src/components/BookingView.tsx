@@ -1,14 +1,13 @@
 import React, { useMemo, useState } from 'react'
 import { BookingsEntity } from '../generated/graphql';
-import { Box, Button, Grid, GridItem, HStack, Input, Link, Text } from '@chakra-ui/react';
-import { bookingStatus, escapeRoom, escapeRooms, roomTime, roomTimes } from '../constance';
+import { Box, Button, Grid, GridItem, HStack, Input, Text } from '@chakra-ui/react';
+import { bookingStatus, escapeRooms, roomTimes } from '../constance';
 import RoomCard from './molecules/RoomCard';
-import { createBookingDateHashMap, getBooking, getBookingStatus, getRoomMap, getStatusBooking, getStatusRoomMap } from '../untilies/bookingHelper';
+import { createBookingDateHashMap, getBooking, getRoomMap } from '../untilies/bookingHelper';
 import { changeDate, getStartOfDate } from '../untilies/getDateString';
-import BookRoomPopUp from './molecules/BookRoomPopUp';
-import CreateRoomPopUp from './molecules/CreateRoomPopUp';
+import BookRoomPopUp from './molecules/BookRoomPopUp';;
 import TimeListItem from './molecules/TimeListItem';
-import NextLink from 'next/link';
+import { dateVar, fetchTillVar } from '../untilies/createApolloClient';
 
 interface Props {
   bookingEntries: BookingsEntity[],
@@ -16,46 +15,36 @@ interface Props {
 }
 
 export default function AdminBookingView({ bookingEntries, fetchMore }: Props) {
-  const [date, setDate] = useState(getStartOfDate(new Date()));
-  const [fetchTillDate, setFetchTillDate] = useState(getStartOfDate(changeDate(date, 3)));
+  const [date, setDate] = useState(getStartOfDate(dateVar()));
+  const [fetchTillDate, setFetchTillDate] = useState(new Date(fetchTillVar()));
   const dateHashMap = useMemo(() => createBookingDateHashMap(bookingEntries), [bookingEntries])
-
-  const getPopUpContent = (room: escapeRoom, time: roomTime, date: Date, bookingData?: BookingsEntity): React.ReactNode => {
-    if (bookingData) {
-      switch (bookingData.status) {
-        case bookingStatus.open:
-          return <BookRoomPopUp bookingData={bookingData} />
-      }
-    }
-    return <CreateRoomPopUp roomId={room.value} time={time.value} date={date} />
-  }
 
   const descDate = () => {
     const newDate = changeDate(date, -1);
     if (newDate >= getStartOfDate(new Date())) {
       setDate(newDate);
+      dateVar(newDate);
+
     }
   }
 
   const increaseDate = () => {
-    console.log(fetchTillDate, date);
     if (date.getTime() === fetchTillDate.getTime()) {
       fetchMore({ variables: { limit: 1, cursor: fetchTillDate.getTime().toString() } });
       setDate(changeDate(date, 1));
       setFetchTillDate(changeDate(fetchTillDate, 1));
+      dateVar(changeDate(dateVar(), 1));
+      const day = 60 * 60 * 24 * 1000;
+      fetchTillVar(fetchTillVar() + day);
     } else {
-      setDate(changeDate(date, +1));
+      setDate(changeDate(date, 1))
+      dateVar(changeDate(dateVar(), 1));
     }
   }
 
   return (
     <Box m={4}>
-      <HStack spacing="2">
-        <Text fontSize="4xl">Booking Schedule</Text>
-        <NextLink href='admin/createRooms'>
-          <Link paddingLeft={5}>Multiple Booking</Link>
-        </NextLink>
-      </HStack>
+      <Text fontSize="4xl">Booking Schedule</Text>
       <HStack spacing="4">
         <Button colorScheme="teal" onClick={descDate} variant="solid">-</Button>
         <Input disabled value={date.toDateString()} textAlign={'center'} />

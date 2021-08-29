@@ -10,6 +10,7 @@ import BookRoomPopUp from './molecules/BookRoomPopUp';
 import CompleteRoomPopUp from './molecules/CompleteRoomPopUp';
 import { changeDate, getStartOfDate } from '../untilies/getDateString';
 import NextLink from 'next/link';
+import { dateVar, fetchTillVar } from '../untilies/createApolloClient';
 
 interface Props {
   bookingEntries: BookingsEntity[],
@@ -17,8 +18,12 @@ interface Props {
 }
 
 export default function AdminBookingView({ bookingEntries, fetchMore }: Props) {
-  const [date, setDate] = useState(getStartOfDate(new Date()));
-  const [fetchTillDate, setFetchTillDate] = useState(getStartOfDate(changeDate(date, 3)));
+  const [date, setDate] = useState(getStartOfDate(dateVar()));
+  //const dateThreeDaysFromNow = getStartOfDate(fetchTillVar())
+  //dateVar(dateVar() ? getStartOfDate(new Date()) : dateVar());
+  //fetchTillVar(fetchTillVar() ? changeDate(getStartOfDate(new Date()), 3).getTime() : fetchTillVar());
+  const [fetchTillDate, setFetchTillDate] = useState(new Date(fetchTillVar()));
+
   const dateHashMap = useMemo(() => createBookingDateHashMap(bookingEntries), [bookingEntries])
 
   const getPopUpContent = (room: escapeRoom, time: roomTime, date: Date, bookingData?: BookingsEntity): React.ReactNode => {
@@ -50,27 +55,32 @@ export default function AdminBookingView({ bookingEntries, fetchMore }: Props) {
   }
 
   const descDate = () => {
-    const newDate = changeDate(date, -1);
+    const newDate = changeDate(dateVar(), -1);
     if (newDate >= getStartOfDate(new Date())) {
       setDate(newDate);
+      dateVar(newDate);
+
     }
   }
 
   const increaseDate = () => {
-    console.log(fetchTillDate, date);
     if (date.getTime() === fetchTillDate.getTime()) {
       fetchMore({ variables: { limit: 1, cursor: fetchTillDate.getTime().toString() } });
       setDate(changeDate(date, 1));
       setFetchTillDate(changeDate(fetchTillDate, 1));
+      dateVar(changeDate(dateVar(), 1));
+      const day = 60 * 60 * 24 * 1000;
+      fetchTillVar(fetchTillVar() + day);
     } else {
-      setDate(changeDate(date, +1));
+      setDate(changeDate(date, 1))
+      dateVar(changeDate(dateVar(), 1));
     }
   }
 
   return (
     <Box m={4}>
       <HStack spacing="2">
-        <Text fontSize="4xl">Booking Schedule</Text>
+        <Text fontSize="4xl">Admin Booking Schedule</Text>
         <NextLink href='admin/createRooms'>
           <Link paddingLeft={5}>Multiple Booking</Link>
         </NextLink>

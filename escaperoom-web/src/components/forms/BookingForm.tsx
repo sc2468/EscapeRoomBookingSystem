@@ -33,7 +33,7 @@ export default function BookingForm(props: Props) {
           numberOfPeople: 2
         }}
         onSubmit={async (values, { setErrors }) => {
-          const response = await bookAvailableBooking({ variables: { bookingId: id, options: { ...values } } })
+          const response = await bookAvailableBooking({ variables: { bookingId: parseInt(id), options: { ...values } } })
           if (response.data?.BookAvailableBooking.errors) {
             const errors = response.data?.BookAvailableBooking.errors;
             setErrors(toErrorMap(errors));
@@ -46,7 +46,7 @@ export default function BookingForm(props: Props) {
         {({ isSubmitting, values: { numberOfPeople } }) => (
           <Form>
             <Box mt={4}>
-              <InputField name="name" placeholder="Team Name" label="Team Name" required/>
+              <InputField name="name" placeholder="Team Name" label="Team Name" required />
             </Box>
             <Box mt={4}>
               <InputField name="contactPhoneNumber" placeholder="Phone Number" label="Phone Number" required />

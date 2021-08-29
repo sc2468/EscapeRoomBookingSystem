@@ -44,5 +44,6 @@ query getBookings($limit: Float!, $cursor: String ) {
       escapeTime
       notes
     }
+    
   }
 }

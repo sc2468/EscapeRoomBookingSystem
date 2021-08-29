@@ -15,7 +15,7 @@ export class BookingResolver {
     const day = 60 * 60 * 24 * 1000;
     const startDate = cursor ? cursor : getStartOfDateSeconds(new Date());
     const limitDate = getStartOfDateSeconds(new Date(parseFloat(startDate) + (day * limit)));
-    const allBooking = await BookingsEntity.find({ relations: ['team'], });
+    const allBooking = await BookingsEntity.find({ relations: ['team', 'result'], });
 
     // need to be changed to use left join
     return allBooking.filter(booking => booking.date >= startDate && booking.date <= limitDate)
@@ -32,7 +32,7 @@ export class BookingResolver {
   async getBooking(
     @Arg("bookingId") bookingId: number
   ): Promise<BookingResponse> {
-    const booking = await BookingsEntity.findOne({ id: bookingId });
+    const booking = await BookingsEntity.findOne({ id: bookingId }, { relations: ['team', 'result'], });
     if (booking) {
       return {
         booking

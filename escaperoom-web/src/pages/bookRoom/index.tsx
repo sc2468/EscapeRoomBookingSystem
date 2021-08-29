@@ -11,7 +11,10 @@ export default function index() {
     <Layout>
       {loading && <Loading />}
       {error && <Error />}
-      {(data && data.getBookings) && <BookingView bookingEntries={data.getBookings} fetchMore={fetchMore} />}
+      {(data && data.getBookings) && (<BookingView
+        bookingEntries={data.getBookings}
+        fetchMore={fetchMore}
+      />)}
     </Layout>
   )
 }
