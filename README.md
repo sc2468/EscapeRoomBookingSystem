@@ -28,7 +28,7 @@ Current Front end status
 
 * Home page: not implemented
 * Room page: initial implementation
-* Room Booking: Currently Broken
+* Room Booking: initial implementation
 * Admin Room overview page: implementated
   * Date base Pagination (loads next 3 days of bookings, when viewing next day outside this range gets required booking data)
   * Open an escapseRoom time slot: implementated
@@ -38,7 +38,10 @@ Current Front end status
   * Enter a result for a escape room time slot: implemented
 * Bulk Time Slot Creation: implementated
 
-
+Current Bugs: 
+* Creating an open booking then booking it without reloading the page does not update UI. (not a normal workflow) 
+* Openning Admin screen going forward 4 days opening customer booking screen going foward four days causes app to reload. (not normal workflow)
+* on Admin screen pop up is not close after any user action.
 
 
 Reason I chose to use graphql over rest 
