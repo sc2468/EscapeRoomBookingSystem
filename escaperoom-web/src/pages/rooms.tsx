@@ -3,10 +3,11 @@ import React from 'react';
 import Layout from '../components/molecules/Layout';
 import RoomCard from '../components/molecules/RoomCard';
 import { escapeRooms } from '../constance';
+import { customerLinks } from '../constance/menuItems';
 
 export default function rooms() {
   return (
-    <Layout>
+    <Layout menuItems={customerLinks}>
       <Box mt={4}>
         <Grid gap={2} templateColumns={{ md: "repeat(3, 1fr)", base: "repeat(1, 1fr)" }}>
           {escapeRooms.map(room => (<GridItem colSpan={1} m={2} key={room.value} backgroundColor='gray.100' alignItems='center' alignContent='center'>

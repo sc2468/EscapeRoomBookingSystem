@@ -1,11 +1,16 @@
 import React from 'react'
 import NavBar from './NavBar'
 import { Wrapper } from '../atoms/Wrapper'
+import { menuItem } from '../../constance/menuItems'
 
-export default function Layout({ children }) {
+interface props {
+  menuItems: menuItem[]
+}
+
+export default function Layout({ children, menuItems }) {
   return (
     <>
-      <NavBar />
+      <NavBar links={menuItems} />
       <Wrapper>{children}</Wrapper>
     </>
   )

@@ -1,6 +1,7 @@
 import { Text } from '@chakra-ui/react'
 import React from 'react'
 import { bookingStatus, escapeRooms } from '../constance'
+import { customerLinks } from '../constance/menuItems'
 import { BookingsEntity } from '../generated/graphql'
 import BookingForm from './forms/BookingForm'
 import Layout from './molecules/Layout'
@@ -19,7 +20,7 @@ function DetailsPage(props: Props) {
     month: 'long', // numeric, 2-digit, long, short, narrow
   });
   return (
-    <Layout>
+    <Layout menuItems={customerLinks}>
       <Text fontSize="4xl">Book Room</Text>
       <Text fontSize="2xl"><b>{roomName}</b> at <b>{formattedDate} {time}</b></Text>
       {status === bookingStatus.open && <BookingForm booking={props.booking} />}

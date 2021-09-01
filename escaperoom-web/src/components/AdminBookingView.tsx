@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
-import { BookingsEntity } from '../generated/graphql';
-import { Box, Button, Grid, GridItem, HStack, Input, Link, PopoverArrow, PopoverCloseButton, PopoverContent, PopoverHeader, Text } from '@chakra-ui/react';
+import { BookingsEntity, Exact } from '../generated/graphql';
+import { Box, Button, Grid, GridItem, HStack, Input, PopoverArrow, PopoverCloseButton, PopoverContent, PopoverHeader, Text } from '@chakra-ui/react';
 import { bookingStatus, escapeRoom, escapeRooms, roomTime, roomTimes } from '../constance';
 import RoomCard from './molecules/RoomCard';
 import { createBookingDateHashMap, getBooking, getBookingStatus, getRoomMap } from '../untilies/bookingHelper';
@@ -9,19 +9,16 @@ import CreateRoomPopUp from './molecules/CreateRoomPopUp';
 import BookRoomPopUp from './molecules/BookRoomPopUp';
 import CompleteRoomPopUp from './molecules/CompleteRoomPopUp';
 import { changeDate, getStartOfDate } from '../untilies/getDateString';
-import NextLink from 'next/link';
 import { dateVar, fetchTillVar } from '../untilies/createApolloClient';
+import { FetchMoreQueryOptions } from '@apollo/client';
 
 interface Props {
   bookingEntries: BookingsEntity[],
-  fetchMore: any,
+  fetchMore: any
 }
 
 export default function AdminBookingView({ bookingEntries, fetchMore }: Props) {
   const [date, setDate] = useState(getStartOfDate(dateVar()));
-  //const dateThreeDaysFromNow = getStartOfDate(fetchTillVar())
-  //dateVar(dateVar() ? getStartOfDate(new Date()) : dateVar());
-  //fetchTillVar(fetchTillVar() ? changeDate(getStartOfDate(new Date()), 3).getTime() : fetchTillVar());
   const [fetchTillDate, setFetchTillDate] = useState(new Date(fetchTillVar()));
 
   const dateHashMap = useMemo(() => createBookingDateHashMap(bookingEntries), [bookingEntries])
@@ -79,12 +76,7 @@ export default function AdminBookingView({ bookingEntries, fetchMore }: Props) {
 
   return (
     <Box m={4}>
-      <HStack spacing="2">
-        <Text fontSize="4xl">Admin Booking Schedule</Text>
-        <NextLink href='admin/createRooms'>
-          <Link paddingLeft={5}>Multiple Booking</Link>
-        </NextLink>
-      </HStack>
+      <Text fontSize="4xl">Admin Booking Schedule</Text>
       <HStack spacing="4">
         <Button colorScheme="teal" onClick={descDate} variant="solid">-</Button>
         <Input disabled value={date.toDateString()} textAlign={'center'} />

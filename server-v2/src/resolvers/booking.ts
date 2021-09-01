@@ -122,7 +122,7 @@ export class BookingResolver {
       return {
         errors: [{
           field: 'bookingId',
-          message: "That booking could not be closed or canceled"
+          message: "That booking could not be closed"
         }],
         bookingId: bookingId
       }

@@ -14,31 +14,7 @@ interface Props {
 export default function BookRoomPopUp({ bookingData }: Props) {
 
   const toast = useToast()
-  const [bookAvailableBooking] = useBookAvailableBookingMutation(
-    //   {
-    //   // TODO As this is a update it should automatically but this is not work so manually doing it.
-    //   // have chosen to use write fragment to update booking instead of writeQuery as writeQuery results 
-    //   // in a bug with the pagination merging code in the InMemoryCache 
-    //   update(cache, { data: { BookAvailableBooking } }) {
-    //     if (BookAvailableBooking && BookAvailableBooking.booking) {
-    //       const bookingData = BookAvailableBooking.booking
-    //       cache.writeFragment({
-    //         id: `BookingEntity${bookingData.id}`,
-    //         fragment: gql`
-    //         fragment bookingFragment on BookingEntity {
-    //           team
-    //           status
-    //         }
-    //       `,
-    //         data: {
-    //           team: bookingData.team,
-    //           status: bookingData.status,
-    //         },
-    //       });
-    //     }
-    //   }
-    // }
-  );
+  const [bookAvailableBooking] = useBookAvailableBookingMutation();
 
   const [closeBooking] = useCloseOpenBookingMutation({
     update(cache, { data: { CloseOpenBooking } }) {

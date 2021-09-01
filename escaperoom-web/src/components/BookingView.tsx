@@ -11,7 +11,7 @@ import { dateVar, fetchTillVar } from '../untilies/createApolloClient';
 
 interface Props {
   bookingEntries: BookingsEntity[],
-  fetchMore: () => any
+  fetchMore: any,
 }
 
 export default function AdminBookingView({ bookingEntries, fetchMore }: Props) {

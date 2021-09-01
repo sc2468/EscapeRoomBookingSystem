@@ -7,15 +7,15 @@ import { escapeRooms, roomTimes } from '../../constance';
 import { BookingItemInput, useCreateAvailableBookingsMutation } from '../../generated/graphql'
 import { getStartOfDateSeconds } from '../../untilies/getDateString';
 import { toErrorMap } from '../../untilies/toErrorMap';
-import { deleteBookingEntityCache } from '../../untilies/deleteListItemsFromCache';
 import { useApolloClient } from '@apollo/client';
+import { adminLinks } from '../../constance/menuItems';
 
 export default function createRooks() {
   const [bulkCreate] = useCreateAvailableBookingsMutation()
   const toast = useToast()
   const client = useApolloClient();
   return (
-    <Layout>
+    <Layout menuItems={adminLinks}>
       <Box m={4}>
         <Formik
           initialValues={{
@@ -24,7 +24,6 @@ export default function createRooks() {
             time: [],
           }}
           onSubmit={async (values, { setErrors }) => {
-            console.log(values)
             const newBookings: BookingItemInput[] = values.time.map((time) => ({
               roomId: values.roomId,
               date: getStartOfDateSeconds(new Date(values.day)),
@@ -39,7 +38,7 @@ export default function createRooks() {
                 title: "Rooms Created.",
                 description: "We've created the rooms",
                 status: "success",
-                duration: 9000,
+                duration: 5000,
                 isClosable: true,
               })
               // clean the store to stop errors with pagination we don't want to use 
