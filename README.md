@@ -24,6 +24,14 @@ For instructions on how to setup and configure the graphql server see the readme
 
 # Frontend
 
+The front is seperated into to different app both on port 3000.  
+
+* Customer view: The customer view is accessable on http://localhost:3000/ and has a home page, about escape room page and customer booking page.
+
+* Admin view: The admin view is accessable on http://localhost:3000/admin and has the admin booking page and bulk booking page.
+
+
+
 Current Front end status
 
 * Home page: not implemented
@@ -39,8 +47,7 @@ Current Front end status
 * Bulk Time Slot Creation: implementated
 
 Current Bugs: 
-* Creating an open booking then booking it without reloading the page does not update UI. (not a normal workflow) 
-* Openning Admin screen going forward 4 days opening customer booking screen going foward four days causes app to reload. (not normal workflow)
+* Creating an open booking then booking it without reloading the page does not update UI. (not a normal workflow admin screen only) 
 * on Admin screen pop up is not close after any user action.
 
 
