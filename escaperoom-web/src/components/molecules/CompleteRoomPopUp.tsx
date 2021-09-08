@@ -36,7 +36,6 @@ export default function CompleteRoomPopUp({ bookingData }: Props) {
         isClosable: true,
       })
     } else if (response.data?.CancelBookedBooking.success) {
-      console.log(response.data?.CancelBookedBooking.success)
       toast({
         title: "Booking Canceled",
         description: "The room booking has been canceled.",

@@ -55,8 +55,8 @@ export type Mutation = {
   createAvailableBooking: BookingResponse;
   createAvailableBookings: OperationResponse;
   BookAvailableBooking: BookingResponse;
-  CloseOpenBooking: OperationResponse;
-  CancelBookedBooking: OperationResponse;
+  CloseOpenBooking: BookingResponse;
+  CancelBookedBooking: BookingResponse;
   CompleteBooking: BookingResponse;
 };
 
@@ -183,12 +183,14 @@ export type CloseOpenBookingMutationVariables = Exact<{
 export type CloseOpenBookingMutation = (
   { __typename?: 'Mutation' }
   & { CloseOpenBooking: (
-    { __typename?: 'OperationResponse' }
-    & Pick<OperationResponse, 'success' | 'bookingId'>
+    { __typename?: 'BookingResponse' }
     & { errors?: Maybe<Array<(
       { __typename?: 'FieldError' }
       & Pick<FieldError, 'field' | 'message'>
-    )>> }
+    )>>, booking?: Maybe<(
+      { __typename?: 'BookingsEntity' }
+      & Pick<BookingsEntity, 'id' | 'time' | 'date' | 'roomId' | 'status'>
+    )> }
   ) }
 );
 
@@ -200,12 +202,14 @@ export type CancelBookedBookingMutationVariables = Exact<{
 export type CancelBookedBookingMutation = (
   { __typename?: 'Mutation' }
   & { CancelBookedBooking: (
-    { __typename?: 'OperationResponse' }
-    & Pick<OperationResponse, 'success' | 'bookingId'>
+    { __typename?: 'BookingResponse' }
     & { errors?: Maybe<Array<(
       { __typename?: 'FieldError' }
       & Pick<FieldError, 'field' | 'message'>
-    )>> }
+    )>>, booking?: Maybe<(
+      { __typename?: 'BookingsEntity' }
+      & Pick<BookingsEntity, 'id' | 'time' | 'date' | 'roomId' | 'status'>
+    )> }
   ) }
 );
 
@@ -407,8 +411,13 @@ export const CloseOpenBookingDocument = gql`
       field
       message
     }
-    success
-    bookingId
+    booking {
+      id
+      time
+      date
+      roomId
+      status
+    }
   }
 }
     `;
@@ -445,8 +454,13 @@ export const CancelBookedBookingDocument = gql`
       field
       message
     }
-    success
-    bookingId
+    booking {
+      id
+      time
+      date
+      roomId
+      status
+    }
   }
 }
     `;

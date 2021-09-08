@@ -15,28 +15,27 @@ export default function BookRoomPopUp({ bookingData }: Props) {
 
   const toast = useToast()
   const [bookAvailableBooking] = useBookAvailableBookingMutation();
-
-  const [closeBooking] = useCloseOpenBookingMutation({
-    update(cache, { data: { CloseOpenBooking } }) {
-      if (CloseOpenBooking && CloseOpenBooking.success && CloseOpenBooking.success === true) {
-        const closedBookingId = CloseOpenBooking.bookingId;
-        cache.modify({
-          fields: {
-            getBookings(existingBookings = []) {
-              const otherBookings = existingBookings.filter(booking => booking.id === closedBookingId)
-              return [...otherBookings];
-            }
-          }
-        })
-      }
-    }
-  });
+  const [closeBooking] = useCloseOpenBookingMutation();
+  // const [closeBooking] = useCloseOpenBookingMutation({
+  //   update(cache, { data: { CloseOpenBooking } }) {
+  //     if (CloseOpenBooking && CloseOpenBooking.success && CloseOpenBooking.success === true) {
+  //       const closedBookingId = CloseOpenBooking.bookingId;
+  //       cache.modify({
+  //         fields: {
+  //           getBookings(existingBookings = []) {
+  //             const otherBookings = existingBookings.filter(booking => booking.id === closedBookingId)
+  //             return [...otherBookings];
+  //           }
+  //         }
+  //       })
+  //     }
+  //   }
+  // });
 
   const close = async () => {
     const response = await closeBooking({ variables: { bookingId: Number.parseInt(bookingData.id) } });
     if (response.data?.CloseOpenBooking.errors) {
-      const errors = response.data?.CloseOpenBooking.errors;
-      console.log(errors);
+      console.log(response.data?.CloseOpenBooking.errors);
       toast({
         title: "Rooms Could not be closed.",
         description: "",
@@ -44,8 +43,7 @@ export default function BookRoomPopUp({ bookingData }: Props) {
         duration: 5000,
         isClosable: true,
       })
-    } else if (response.data?.CloseOpenBooking.success) {
-      console.log(response.data?.CloseOpenBooking.success);
+    } else {
       toast({
         title: "Rooms Closed.",
         description: "The room was closed",

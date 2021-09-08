@@ -108,43 +108,38 @@ export class BookingResolver {
     }
   }
 
-  @Mutation(() => OperationResponse)
+  @Mutation(() => BookingResponse)
   async CloseOpenBooking(
     @Arg("bookingId") bookingId: number
-  ): Promise<OperationResponse> {
+  ): Promise<BookingResponse> {
     const existingBooking = await BookingsEntity.findOne({ id: bookingId });
     if (existingBooking && existingBooking.status === bookingStatus.open) {
       existingBooking.status = bookingStatus.closed;
-      existingBooking
-      await BookingsEntity.save(existingBooking)
-      return { success: true, bookingId: bookingId };
+      return { booking: await BookingsEntity.save(existingBooking) };
     } else {
       return {
         errors: [{
           field: 'bookingId',
           message: "That booking could not be closed"
         }],
-        bookingId: bookingId
       }
     }
   }
 
-  @Mutation(() => OperationResponse)
+  @Mutation(() => BookingResponse)
   async CancelBookedBooking(
     @Arg("bookingId") bookingId: number
-  ): Promise<OperationResponse> {
+  ): Promise<BookingResponse> {
     const existingBooking = await BookingsEntity.findOne({ id: bookingId });
     if (existingBooking && existingBooking.status === bookingStatus.booked) {
       existingBooking.status = bookingStatus.open;
-      await BookingsEntity.save(existingBooking)
-      return { success: true, bookingId: bookingId };
+      return { booking: await BookingsEntity.save(existingBooking) };
     } else {
       return {
         errors: [{
           field: 'bookingId',
           message: "That booked booking could not be canceled "
         }],
-        bookingId: bookingId
       }
     }
   }
