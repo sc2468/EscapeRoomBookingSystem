@@ -47,11 +47,27 @@ Current Front end status
 * Bulk Time Slot Creation: implementated
 
 Current Bugs: 
-* Creating an open booking then booking it without reloading the page does not update UI. (not a normal workflow admin screen only) 
+* Creating an open booking then booking it without reloading the page does not update UI. (not a normal workflow admin screen only)
+* schedules pages can display yesterday information if viewed in the morning, bug related to timezones.
 * on Admin screen pop up is not close after any user action.
 
+Admin Book Room Pop Up
+[Admin Book Room Pop Up](https://github.com/sc2468/EscapeRoomBookingSystem/blob/main/read-me-screen-shots/admin-book-room-pop-up.png)
+
+Admin Enter Result Pop Up
+[Admin Enter Result Pop Up](https://github.com/sc2468/EscapeRoomBookingSystem/blob/main/read-me-screen-shots/admin-enter-result-form.png)
+
+Admin Multiple Room Create Form
+[Admin Multiple Room Create Form](https://github.com/sc2468/EscapeRoomBookingSystem/blob/main/read-me-screen-shots/admin-multiple-room-creation-form.png)
+
+Customer Booking Screen
+[Customer Booking Screen](https://github.com/sc2468/EscapeRoomBookingSystem/blob/main/read-me-screen-shots/customer-book-room-pop-up.png)
+
+Customer Room Over Screen
+[Customer Room Over Screen](https://github.com/sc2468/EscapeRoomBookingSystem/blob/main/read-me-screen-shots/customer-book-over-page.png)
 
 Reason I chose to use graphql over rest 
 * wanted to take advantage of graphql's flexable nature to rappialy change API resonses as I prototype dirrent frontend implemenntation.
 * Greater control over returned data
 * leverage its self documenting nature to cut down on the ammount of documentation I was required to write.
+* Use external librarys to generate typescript response types from graphql.
