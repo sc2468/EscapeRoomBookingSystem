@@ -24,7 +24,6 @@ export default function AdminBookingView({ bookingEntries, fetchMore }: Props) {
     if (newDate >= getStartOfDate(new Date())) {
       setDate(newDate);
       dateVar(newDate);
-
     }
   }
 

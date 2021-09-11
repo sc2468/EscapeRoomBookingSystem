@@ -1,9 +1,8 @@
-import { gql } from '@apollo/client'
-import { Box, Button, FormControl, FormLabel, HStack, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverFooter, PopoverHeader, Portal, Text, useToast } from '@chakra-ui/react'
-import { Formik, Form } from 'formik'
+import { Box, Button, FormControl, FormLabel, HStack, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverFooter, PopoverHeader, Portal, Slider, SliderFilledTrack, SliderThumb, SliderTrack, Text, useToast } from '@chakra-ui/react'
+import { Formik, Form, useField } from 'formik'
 import React from 'react'
 import { escapeRooms } from '../../constance'
-import { BookingsEntity, GetBookingsDocument, GetBookingsQuery, useBookAvailableBookingMutation, useCloseOpenBookingMutation } from '../../generated/graphql'
+import { BookingsEntity, useBookAvailableBookingMutation, useCloseOpenBookingMutation } from '../../generated/graphql'
 import { toErrorMap } from '../../untilies/toErrorMap'
 import { InputField } from '../atoms/InputField'
 
@@ -16,6 +15,7 @@ export default function BookRoomPopUp({ bookingData }: Props) {
   const toast = useToast()
   const [bookAvailableBooking] = useBookAvailableBookingMutation();
   const [closeBooking] = useCloseOpenBookingMutation();
+  const [field, , { setValue }] = useField('numberOfPeople');
   // const [closeBooking] = useCloseOpenBookingMutation({
   //   update(cache, { data: { CloseOpenBooking } }) {
   //     if (CloseOpenBooking && CloseOpenBooking.success && CloseOpenBooking.success === true) {
@@ -65,29 +65,35 @@ export default function BookRoomPopUp({ bookingData }: Props) {
     <Portal>
       <PopoverContent bg="white">
         <PopoverArrow />
-        <PopoverHeader>Book {roomName} on {formattedDate} at {time}</PopoverHeader>
+        <PopoverHeader>
+          <Text fontSize={'2xl'}>
+            Book <b>{roomName}</b>
+          </Text></PopoverHeader>
         <PopoverCloseButton />
-        <Box m={2}>
-          <Formik
-            initialValues={{
-              name: "",
-              contactPhoneNumber: "",
-              contactEmail: "",
-              numberOfPeople: 2
-            }}
-            onSubmit={async (values, { setErrors }) => {
-              const response = await bookAvailableBooking({ variables: { bookingId: parseInt(id), options: { ...values } } })
-              if (response.data?.BookAvailableBooking.errors) {
-                const errors = response.data?.BookAvailableBooking.errors;
-                setErrors(toErrorMap(errors));
-                console.log(errors);
-              } else if (response.data?.BookAvailableBooking.booking) {
-                console.log(response.data?.BookAvailableBooking.booking)
-              }
-            }}
-          >
-            {({ isSubmitting, values: { numberOfPeople } }) => (
-              <Form>
+
+        <Formik
+          initialValues={{
+            name: "",
+            contactPhoneNumber: "",
+            contactEmail: "",
+            numberOfPeople: 2
+          }}
+          onSubmit={async (values, { setErrors }) => {
+            const response = await bookAvailableBooking({ variables: { bookingId: parseInt(id), options: { ...values } } })
+            if (response.data?.BookAvailableBooking.errors) {
+              const errors = response.data?.BookAvailableBooking.errors;
+              setErrors(toErrorMap(errors));
+              console.log(errors);
+            } else if (response.data?.BookAvailableBooking.booking) {
+              console.log(response.data?.BookAvailableBooking.booking)
+            }
+          }}
+        >
+          {({ isSubmitting, values: { numberOfPeople } }) => (
+            <Form>
+              <Box m={2}>
+                <Text>Date: <b>{formattedDate}</b></Text>
+                <Text>Time: <b>{time}</b></Text>
                 <Box mt={2}>
                   <InputField name="name" placeholder="Team Name" label="Team Name" required />
                 </Box>
@@ -98,29 +104,34 @@ export default function BookRoomPopUp({ bookingData }: Props) {
                   <InputField name="contactEmail" placeholder="Contact Email" label="Contact Email" required />
                 </Box>
                 <Box mt={2}>
-                  <FormControl isRequired>
+                  <FormControl isRequired name={'numberOfPeople'}>
                     <FormLabel>Number of People</FormLabel>
-                    <NumberInput step={1} defaultValue={2} min={1} max={5} >
+                    <NumberInput step={1} defaultValue={2} min={2} max={5} >
                       <NumberInputField />
                       <NumberInputStepper>
                         <NumberIncrementStepper />
                         <NumberDecrementStepper />
                       </NumberInputStepper>
                     </NumberInput>
+                    <Slider flex="1" focusThumbOnChange={false} min={2} max={5} onChange={(value: number) => setValue(value)}>
+                      <SliderTrack>
+                        <SliderFilledTrack />
+                      </SliderTrack>
+                      <SliderThumb fontSize="sm" boxSize="32px" />
+                    </Slider>
                   </FormControl>
-                  <Text fontSize="1xl">Price for <b>{numberOfPeople}</b> is <b>${numberOfPeople * 25}</b></Text>
+                  <Text mt={2} fontSize="1xl">Price for <b>{numberOfPeople}</b> is <b>${numberOfPeople * 25}</b></Text>
                 </Box>
-                <Box mt={2}>
-                </Box>
-                <HStack justifyContent="space-between">
-                  <Button mt={2} type="submit" bgColor={'teal'} variant="solid" isLoading={isSubmitting}>Book Room</Button>
-                  <Button mt={2} bgColor={'teal'} variant="solid" onClick={close}>Close Booking</Button>
-                </HStack>
-              </Form>
-            )}
-          </Formik >
-        </Box>
+              </Box>
+              <HStack justifyContent="space-between">
+                <Button width={'100%'} type="submit" bgColor={'teal'} variant="solid" isLoading={isSubmitting}>Book Room</Button>
+                <Button width={'100%'} bgColor={'teal'} variant="solid" onClick={close}>Close Booking</Button>
+              </HStack>
+            </Form>
+          )}
+        </Formik >
+
       </PopoverContent>
-    </Portal>
+    </Portal >
   )
 }

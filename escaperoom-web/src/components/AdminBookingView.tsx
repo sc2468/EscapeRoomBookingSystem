@@ -78,9 +78,9 @@ export default function AdminBookingView({ bookingEntries, fetchMore }: Props) {
     <Box m={4}>
       <Text fontSize="4xl">Admin Booking Schedule</Text>
       <HStack spacing="4">
-        <Button colorScheme="teal" onClick={descDate} variant="solid">-</Button>
+        <Button bgColor={'teal'} onClick={descDate} variant="solid">-</Button>
         <Input disabled value={date.toDateString()} textAlign={'center'} />
-        <Button colorScheme="teal" onClick={increaseDate} variant="solid">+</Button>
+        <Button bgColor={'teal'} onClick={increaseDate} variant="solid">+</Button>
       </HStack>
       <Box mt={4}>
         <Grid gap={2} templateColumns={{ md: "repeat(3, 1fr)", base: "repeat(1, 1fr)" }}>

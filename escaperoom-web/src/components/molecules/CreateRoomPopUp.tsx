@@ -63,7 +63,7 @@ export default function CreateRoomPopUp({ roomId, time, date }: Props) {
         <PopoverBody>
           Are you sure you want to open a room at this date and time
         </PopoverBody>
-        <PopoverFooter><Button colorScheme="blue" onClick={create}>Create</Button></PopoverFooter>
+        <PopoverFooter><Button bgColor={'teal'} onClick={create}>Create</Button></PopoverFooter>
       </PopoverContent>
     </Portal>
   )

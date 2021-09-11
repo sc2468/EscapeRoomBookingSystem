@@ -15,7 +15,7 @@ export default function CompleteRoomPopUp({ bookingData }: Props) {
   const toast = useToast()
   const [completeBooking] = useCompleteBookingMutation();
   const [cancelBooking] = useCancelBookedBookingMutation();
-  const { id, date, time, roomId, } = bookingData;
+  const { id, date, time, roomId, team } = bookingData;
   const roomName = escapeRooms.filter(room => room.value === roomId)[0].name;
   const formattedDate = new Date(date).toLocaleString('en-US', {
     day: 'numeric', // numeric, 2-digit
@@ -81,15 +81,33 @@ export default function CompleteRoomPopUp({ bookingData }: Props) {
         <Portal>
           <PopoverContent bg="white">
             <PopoverArrow />
-            <PopoverHeader>Enter Result for {roomName} on {formattedDate} at {time}</PopoverHeader>
+            <PopoverHeader>
+              <Text fontSize="2xl">
+                Enter Result
+              </Text>
+            </PopoverHeader>
             <PopoverCloseButton />
             <Form>
-              <Box mt={4}>
-                <InputField name="escapeTime" placeholder="Escape Time" label="Escape Time" required />
+              <Box m={2}>
+                <Text>
+                  Team Name: <b>{team.name}</b>
+                </Text>
+                <Text>
+                  Room: <b>{roomName}</b>
+                </Text>
+                <Text>
+                  Date: <b>{formattedDate}</b>
+                </Text>
+                <Text>
+                  Time: <b>{time}</b>
+                </Text>
+                <Box mt={2}>
+                  <InputField name="escapeTime" placeholder="Escape Time" label="Escape Time" required />
+                </Box>
               </Box>
               <HStack justifyContent={'space-between'}>
-                <Button mt={4} type="submit" bgColor={'teal'} variant="solid" isLoading={isSubmitting}>Enter</Button>
-                <Button mt={4} bgColor={'teal'} variant="solid" onClick={cancel}>Cancel</Button>
+                <Button width={'100%'} type="submit" bgColor={'teal'} variant="solid" isLoading={isSubmitting}>Enter</Button>
+                <Button width={'100%'} bgColor={'teal'} variant="solid" onClick={cancel}>Cancel</Button>
               </HStack>
             </Form>
           </PopoverContent>
