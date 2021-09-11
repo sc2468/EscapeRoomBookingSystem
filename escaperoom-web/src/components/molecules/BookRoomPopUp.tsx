@@ -15,7 +15,6 @@ export default function BookRoomPopUp({ bookingData }: Props) {
   const toast = useToast()
   const [bookAvailableBooking] = useBookAvailableBookingMutation();
   const [closeBooking] = useCloseOpenBookingMutation();
-  const [field, , { setValue }] = useField('numberOfPeople');
   // const [closeBooking] = useCloseOpenBookingMutation({
   //   update(cache, { data: { CloseOpenBooking } }) {
   //     if (CloseOpenBooking && CloseOpenBooking.success && CloseOpenBooking.success === true) {
@@ -113,12 +112,6 @@ export default function BookRoomPopUp({ bookingData }: Props) {
                         <NumberDecrementStepper />
                       </NumberInputStepper>
                     </NumberInput>
-                    <Slider flex="1" focusThumbOnChange={false} min={2} max={5} onChange={(value: number) => setValue(value)}>
-                      <SliderTrack>
-                        <SliderFilledTrack />
-                      </SliderTrack>
-                      <SliderThumb fontSize="sm" boxSize="32px" />
-                    </Slider>
                   </FormControl>
                   <Text mt={2} fontSize="1xl">Price for <b>{numberOfPeople}</b> is <b>${numberOfPeople * 25}</b></Text>
                 </Box>
