@@ -52,7 +52,7 @@ Current Bugs:
 * on Admin screen pop up is not close after any user action.
 
 Admin Book Room Pop Up
-[Admin Book Room Pop Up](https://github.com/sc2468/EscapeRoomBookingSystem/blob/main/read-me-screen-shots/admin-book-room-pop-up.png)
+[Admin Book Room Pop Up](https://github.com/sc2468/EscapeRoomBookingSystem/blob/main/read-me-screen-shots/admin-book-room-pop-up.png?raw=true)
 
 Admin Enter Result Pop Up
 [Admin Enter Result Pop Up](https://github.com/sc2468/EscapeRoomBookingSystem/blob/main/read-me-screen-shots/admin-enter-result-form.png)
